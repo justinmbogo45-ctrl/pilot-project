@@ -1,0 +1,170 @@
+{
+  "entities": {
+    "users": {
+      "title": "UserProfile",
+      "description": "Registered trader profile storing loyalty points, bookmarked prop firms, and preferences",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Unique Firebase Auth user ID" },
+        "displayName": { "type": "string", "description": "Trader display name" },
+        "email": { "type": "string", "format": "email", "description": "Trader email address" },
+        "photoURL": { "type": "string", "description": "Trader avatar URL" },
+        "loyaltyPoints": { "type": "number", "description": "Accrued loyalty points (defaults to 200 LP welcome bonus)" },
+        "favoriteFirmIds": { "type": "array", "description": "List of bookmarked prop firm IDs" },
+        "claimedGiveaways": { "type": "array", "description": "List of giveaway IDs entered" },
+        "createdAt": { "type": "string", "description": "Account registration timestamp" },
+        "lastLoginAt": { "type": "string", "description": "Last sign-in timestamp" }
+      },
+      "required": ["uid", "email"]
+    },
+    "reviews": {
+      "title": "FirmReview",
+      "description": "Trader reviews and ratings for verified proprietary trading firms",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique review ID" },
+        "userId": { "type": "string", "description": "UID of the authoring trader" },
+        "userDisplayName": { "type": "string", "description": "Author display name" },
+        "userPhotoURL": { "type": "string", "description": "Author avatar URL" },
+        "firmId": { "type": "string", "description": "ID of the reviewed prop firm" },
+        "firmName": { "type": "string", "description": "Name of the reviewed firm" },
+        "rating": { "type": "number", "description": "Star rating from 1 to 5" },
+        "title": { "type": "string", "description": "Review summary headline" },
+        "comment": { "type": "string", "description": "Detailed trader evaluation feedback" },
+        "payoutReceived": { "type": "boolean", "description": "Whether trader successfully withdrew funds" },
+        "createdAt": { "type": "string", "description": "Review timestamp" }
+      },
+      "required": ["userId", "firmId", "rating", "comment"]
+    },
+    "giveawayEntries": {
+      "title": "GiveawayEntry",
+      "description": "User entries for active prop firm challenge giveaways",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique giveaway entry ID" },
+        "userId": { "type": "string", "description": "UID of the participant" },
+        "giveawayId": { "type": "string", "description": "Identifier of the giveaway" },
+        "userEmail": { "type": "string", "description": "Participant notification email" },
+        "createdAt": { "type": "string", "description": "Entry submission timestamp" }
+      },
+      "required": ["userId", "giveawayId"]
+    },
+    "priceAlerts": {
+      "title": "PriceAlert",
+      "description": "User subscription to prop firm account plan price changes and promotional discounts",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique alert ID" },
+        "userId": { "type": "string", "description": "Subscriber user ID" },
+        "userEmail": { "type": "string", "format": "email", "description": "Destination email for price notifications" },
+        "firmId": { "type": "string", "description": "ID of target prop firm" },
+        "firmName": { "type": "string", "description": "Display name of target prop firm" },
+        "firmLogo": { "type": "string", "description": "Logo URL of target prop firm" },
+        "planId": { "type": "string", "description": "ID of target account plan" },
+        "planName": { "type": "string", "description": "Label of plan (e.g. $100K Combine)" },
+        "planSize": { "type": "number", "description": "Account capital size" },
+        "currentPrice": { "type": "number", "description": "Base/current discounted price in USD" },
+        "targetPrice": { "type": "number", "description": "Optional threshold price for notification trigger" },
+        "alertType": { "type": "string", "enum": ["any_change", "price_drop", "discount_increase"], "description": "Trigger rule condition" },
+        "channel": { "type": "string", "enum": ["email", "in_app", "both"], "description": "Alert delivery medium" },
+        "notifyOnDiscount": { "type": "boolean", "description": "Whether to trigger on newly issued coupon codes" },
+        "active": { "type": "boolean", "description": "Whether the alert subscription is enabled" },
+        "createdAt": { "type": "string", "description": "Creation timestamp ISO" },
+        "lastNotifiedAt": { "type": "string", "description": "Timestamp of last alert sent" }
+      },
+      "required": ["userId", "userEmail", "firmId", "planId", "alertType", "active"]
+    },
+    "affiliates": {
+      "title": "AffiliateProfile",
+      "description": "Trader affiliate account with referral links, conversion statistics, and earnings balance",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner trader UID" },
+        "userEmail": { "type": "string", "description": "Affiliate email address" },
+        "displayName": { "type": "string", "description": "Trader display name" },
+        "referralCode": { "type": "string", "description": "Unique referral code" },
+        "customSlug": { "type": "string", "description": "Custom vanity URL slug" },
+        "tier": { "type": "string", "enum": ["Bronze", "Silver", "Gold", "Diamond"], "description": "Affiliate tier level" },
+        "commissionRate": { "type": "number", "description": "Commission percentage (e.g. 15)" },
+        "totalClicks": { "type": "number", "description": "Total referred clicks count" },
+        "totalSignups": { "type": "number", "description": "Total user signups generated" },
+        "totalConversions": { "type": "number", "description": "Total challenge purchases generated" },
+        "conversionRate": { "type": "number", "description": "Clicks to conversions ratio percentage" },
+        "availableEarnings": { "type": "number", "description": "Available balance for withdrawal in USD" },
+        "pendingEarnings": { "type": "number", "description": "Pending balance in 14-day clearance in USD" },
+        "lifetimeEarnings": { "type": "number", "description": "Total cumulative earnings in USD" },
+        "payoutMethod": { "type": "string", "description": "Preferred payout gateway" },
+        "payoutAddress": { "type": "string", "description": "Payout wallet address or account details" },
+        "createdAt": { "type": "string", "description": "Account registration ISO timestamp" },
+        "updatedAt": { "type": "string", "description": "Last update ISO timestamp" }
+      },
+      "required": ["userId", "referralCode", "commissionRate"]
+    },
+    "affiliateActivities": {
+      "title": "ReferralActivityItem",
+      "description": "Log of affiliate referral clicks, signups, and challenge purchases",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique activity ID" },
+        "affiliateUserId": { "type": "string", "description": "Affiliate owner user ID" },
+        "type": { "type": "string", "enum": ["click", "signup", "conversion"], "description": "Event action type" },
+        "firmId": { "type": "string", "description": "Target prop firm ID" },
+        "firmName": { "type": "string", "description": "Target prop firm name" },
+        "planName": { "type": "string", "description": "Target account challenge plan name" },
+        "orderAmount": { "type": "number", "description": "Purchase transaction amount in USD" },
+        "commissionAmount": { "type": "number", "description": "Commission earned in USD" },
+        "status": { "type": "string", "enum": ["completed", "pending", "cleared"], "description": "Payout settlement status" },
+        "traderMask": { "type": "string", "description": "Anonymized buyer alias" },
+        "timestamp": { "type": "string", "description": "Event occurrence ISO timestamp" },
+        "ipCountry": { "type": "string", "description": "Geographical country origin" }
+      },
+      "required": ["affiliateUserId", "type", "timestamp"]
+    },
+    "affiliatePayouts": {
+      "title": "AffiliatePayout",
+      "description": "Trader commission withdrawal request records",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique payout request ID" },
+        "affiliateUserId": { "type": "string", "description": "Affiliate owner user ID" },
+        "amount": { "type": "number", "description": "Withdrawal amount requested in USD" },
+        "method": { "type": "string", "description": "Payout method selected" },
+        "destination": { "type": "string", "description": "Wallet or banking destination" },
+        "status": { "type": "string", "enum": ["Pending", "Processing", "Completed"], "description": "Processing state" },
+        "requestedAt": { "type": "string", "description": "Submission ISO timestamp" },
+        "txHash": { "type": "string", "description": "Transaction confirmation hash" }
+      },
+      "required": ["affiliateUserId", "amount", "method", "destination", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "users",
+      "description": "Private user profile and loyalty points ledger"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "reviews",
+      "description": "Public trader community reviews for prop firms"
+    },
+    "/giveawayEntries/{entryId}": {
+      "schema": "giveawayEntries",
+      "description": "Trader entries for exclusive free funded accounts giveaways"
+    },
+    "/priceAlerts/{alertId}": {
+      "schema": "priceAlerts",
+      "description": "Subscribed price drop and coupon notification alerts per user"
+    },
+    "/affiliates/{userId}": {
+      "schema": "affiliates",
+      "description": "Private affiliate account profile and referral metrics"
+    },
+    "/affiliateActivities/{activityId}": {
+      "schema": "affiliateActivities",
+      "description": "Tracking logs for clicks, signups, and conversions per affiliate"
+    },
+    "/affiliatePayouts/{payoutId}": {
+      "schema": "affiliatePayouts",
+      "description": "Affiliate earnings withdrawal request history"
+    }
+  }
+}

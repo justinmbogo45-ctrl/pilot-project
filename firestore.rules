@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // User profiles & loyalty data
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId);
+      allow create, update: if isSignedIn() && (request.auth.uid == userId);
+      allow delete: if false;
+    }
+
+    // Trader reviews for prop firms
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isSignedIn() 
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.rating >= 1 
+        && request.resource.data.rating <= 5;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Trader entries for funded account giveaways
+    match /giveawayEntries/{entryId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Subscribed price alerts per user
+    match /priceAlerts/{alertId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Trader affiliate profile
+    match /affiliates/{userId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Affiliate referral tracking activity logs
+    match /affiliateActivities/{activityId} {
+      allow read: if isSignedIn() && resource.data.affiliateUserId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.affiliateUserId == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Affiliate commission payout requests
+    match /affiliatePayouts/{payoutId} {
+      allow read: if isSignedIn() && resource.data.affiliateUserId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.affiliateUserId == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Health check collection for connection test
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}
