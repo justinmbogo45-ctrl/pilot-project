@@ -86,7 +86,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <h3 className="text-xl font-bold text-[#f1f3f2] tracking-tight">
-            Sign In to Prop Firm Match
+            Sign in to Signal Props
           </h3>
           <p className="text-xs text-[#747976] mt-1">
             Claim your <span className="text-[#3ecf8e] font-semibold">200 Loyalty Points Welcome Bonus</span>, save favorites, and write reviews.
@@ -161,7 +161,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         </div>
 
         <div className="mt-6 text-center text-[11px] text-[#9a9e9b]">
-          By signing in, you agree to Prop Firm Match Terms of Service and Privacy Policy. Securely authenticated with Firebase.
+          By signing in, you agree to Signal Props Terms of Service and Privacy Policy. Securely authenticated with Firebase.
         </div>
 
       </div>

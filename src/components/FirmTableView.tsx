@@ -11,7 +11,8 @@ import {
   Info,
   ExternalLink,
   ChevronRight,
-  Bell
+  Bell,
+  Scale
 } from 'lucide-react';
 import { PropFirm, AccountPlan } from '../types';
 
@@ -27,12 +28,14 @@ interface FirmTableViewProps {
   activeFilterPill: 'popular' | 'favorite' | 'new' | 'all';
   setActiveFilterPill: (pill: 'popular' | 'favorite' | 'new' | 'all') => void;
   onOpenPriceAlert?: (firm: PropFirm, plan: AccountPlan) => void;
+  onToggleCompare: (firm: PropFirm, plan: AccountPlan) => void;
+  comparedFirmIds: string[];
 }
 
 export const FirmTableView: React.FC<FirmTableViewProps> = ({
   firms, preferredSize, currency, savedFirmIds, onToggleSave,
   onOpenDetails, onOpenFilterDrawer, onOpenMethodologyModal,
-  activeFilterPill, setActiveFilterPill, onOpenPriceAlert,
+  activeFilterPill, setActiveFilterPill, onOpenPriceAlert, onToggleCompare, comparedFirmIds,
 }) => {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [sortAsc, setSortAsc] = useState<boolean>(true);
@@ -317,6 +320,12 @@ export const FirmTableView: React.FC<FirmTableViewProps> = ({
                       {/* ACTIONS */}
                       <td className="py-3.5 px-4 text-center">
                         <div className="flex items-center justify-center gap-1.5">
+                          {defaultPlan && <button
+                            onClick={(e) => { e.stopPropagation(); onToggleCompare(firm, defaultPlan); }}
+                            title={comparedFirmIds.includes(firm.id) ? `Remove ${firm.name} from comparison` : `Add ${firm.name} to comparison`}
+                            aria-label={comparedFirmIds.includes(firm.id) ? `Remove ${firm.name} from comparison` : `Add ${firm.name} to comparison`}
+                            className={`rounded-md border px-2.5 py-1.5 text-xs transition-colors ${comparedFirmIds.includes(firm.id) ? 'border-[#3ecf8e]/40 bg-[#3ecf8e]/10 text-[#3ecf8e]' : 'border-[#2b2e2c] text-[#9a9e9b] hover:border-[#3a3f3b] hover:text-[#f1f3f2]'}`}
+                          ><Scale className="mr-1 inline h-3.5 w-3.5" />{comparedFirmIds.includes(firm.id) ? 'Added' : 'Compare'}</button>}
                           {onOpenPriceAlert && defaultPlan?.discountedPrice != null && (
                             <button
                               onClick={(e) => { e.stopPropagation(); onOpenPriceAlert(firm, defaultPlan); }}

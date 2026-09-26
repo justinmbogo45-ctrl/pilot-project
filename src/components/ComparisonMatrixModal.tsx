@@ -1,25 +1,55 @@
 import React, { useEffect } from 'react';
 import type { PropFirm, AccountPlan } from '../types';
 import { displayValue, planPrice } from '../lib/catalog';
+
 interface ComparisonMatrixModalProps {
-  items: {firm:PropFirm;plan:AccountPlan}[];
-  onRemoveItem:(id:string)=>void;onClearAll:()=>void;
-  onChangePlan:(id:string,plan:AccountPlan)=>void;onClose:()=>void;currency:'USD'|'EUR'|'GBP';
+  items: { firm: PropFirm; plan: AccountPlan }[];
+  onRemoveItem: (id: string) => void;
+  onClearAll: () => void;
+  onChangePlan: (id: string, plan: AccountPlan) => void;
+  onClose: () => void;
+  currency: 'USD' | 'EUR' | 'GBP';
+  embedded?: boolean;
 }
-export const ComparisonMatrixModal:React.FC<ComparisonMatrixModalProps> = ({items,onRemoveItem,onClearAll,onChangePlan,onClose})=>{
-  useEffect(()=>{const close=(e:KeyboardEvent)=>{if(e.key==='Escape')onClose();};window.addEventListener('keydown',close);return()=>window.removeEventListener('keydown',close);},[onClose]);
-  if(!items.length)return null;
-  const metrics:[string,(item:typeof items[number])=>unknown][]=[
-    ['Price',i=>planPrice(i.plan)],['Account size',i=>i.plan.sourcePlan?.account_size],['Challenge',i=>i.plan.sourcePlan?.step],
-    ['Profit split',i=>i.plan.sourcePlan?.profit_split],['Profit target',i=>i.plan.sourcePlan?.profit_target],['Daily loss',i=>i.plan.sourcePlan?.max_daily_loss],
-    ['Maximum drawdown',i=>i.plan.sourcePlan?.max_total_drawdown],['Drawdown model',i=>i.plan.sourcePlan?.drawdown_model],
-    ['Minimum trading days',i=>i.plan.minTradingDays],['First payout (days)',i=>i.plan.firstPayoutDays],
-    ['Trustpilot rating',i=>i.firm.trustpilotScore],['Platforms',i=>i.firm.availablePlatforms],
+
+export const ComparisonMatrixModal: React.FC<ComparisonMatrixModalProps> = ({ items, onRemoveItem, onClearAll, onChangePlan, onClose, embedded = false }) => {
+  useEffect(() => {
+    if (embedded) return;
+    const close = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
+  }, [embedded, onClose]);
+  if (!items.length) return null;
+
+  const metrics: [string, (item: typeof items[number]) => unknown][] = [
+    ['Price', item => planPrice(item.plan)],
+    ['Account size', item => item.plan.sourcePlan?.account_size ?? item.plan.size],
+    ['Challenge type', item => item.plan.sourcePlan?.step],
+    ['Profit target', item => item.plan.sourcePlan?.profit_target ?? item.plan.step1TargetPercent],
+    ['Profit split', item => item.plan.sourcePlan?.profit_split ?? item.plan.profitSplit],
+    ['Daily loss limit', item => item.plan.sourcePlan?.max_daily_loss ?? item.plan.dailyDrawdownPercent],
+    ['Total drawdown', item => item.plan.sourcePlan?.max_total_drawdown ?? item.plan.maxDrawdownPercent],
+    ['Drawdown model', item => item.plan.sourcePlan?.drawdown_model],
+    ['Minimum trading days', item => item.plan.minTradingDays],
+    ['First payout (days)', item => item.plan.firstPayoutDays],
+    ['Trustpilot rating', item => item.firm.trustpilotScore],
+    ['Platforms', item => item.firm.availablePlatforms],
   ];
-  return <div role="dialog" aria-modal="true" aria-label="Firm comparison" className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onClick={onClose}><div className="bg-[#1a1c1b] border border-[#333633] rounded-2xl p-5 max-w-6xl w-full max-h-[92vh] overflow-auto" onClick={e=>e.stopPropagation()}>
-    <div className="flex justify-between gap-3 mb-3"><h2 className="text-lg font-bold">Compare firms</h2><div><button className="mr-4 text-sm underline" onClick={onClearAll}>Clear all</button><button onClick={onClose} aria-label="Close comparison">✕</button></div></div>
-    <p className="text-xs text-[#747976] mb-4">Source prices retain their original currencies. Rules can vary by account and phase; open firm details for the full notes.</p>
-    <table className="w-full text-sm text-left"><thead><tr><th className="p-3">Metric</th>{items.map(i=><th className="p-3 min-w-48" key={i.firm.id}><div className="flex justify-between gap-2">{i.firm.name}<button aria-label={`Remove ${i.firm.name}`} onClick={()=>onRemoveItem(i.firm.id)}>✕</button></div><select className="mt-2 w-full max-w-64 bg-[#1d1f1e] rounded text-xs p-2" value={i.plan.id} onChange={e=>{const p=i.firm.plans.find(p=>p.id===e.target.value);if(p)onChangePlan(i.firm.id,p);}}>{i.firm.plans.map(p=><option key={p.id} value={p.id}>{p.label}</option>)}</select></th>)}</tr></thead>
-    <tbody>{metrics.map(([label,get])=><tr className="border-t border-[#2b2e2c]" key={label}><th className="p-3 text-[#747976] font-normal">{label}</th>{items.map(i=><td className="p-3" key={i.firm.id}>{displayValue(get(i))}</td>)}</tr>)}</tbody></table>
-  </div></div>;
+  const content = <div className="w-full overflow-hidden rounded-2xl border border-[#2b2e2c] bg-[#1d1f1e]">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#2b2e2c] px-5 py-5 sm:px-7">
+      <div><h2 className="text-lg font-medium text-[#f1f3f2]">Your comparison</h2><p className="mt-1 text-sm text-[#747976]">{items.length} of 4 firms selected</p></div>
+      <div className="flex gap-4"><button onClick={onClearAll} className="text-sm text-[#9a9e9b] hover:text-[#f1f3f2]">Clear all</button><button onClick={onClose} className="text-sm text-[#9a9e9b] hover:text-[#f1f3f2]" aria-label={embedded ? 'Back to firms' : 'Close comparison'}>{embedded ? 'Back to firms' : 'Close'}</button></div>
+    </div>
+    <p className="px-5 pt-5 text-xs leading-5 text-[#747976] sm:px-7">Prices remain in their source currency. Rules can vary by plan and phase; open firm details for full notes.</p>
+    <div className="overflow-x-auto px-5 pb-6 pt-4 sm:px-7">
+      <table className="w-full min-w-[620px] border-collapse text-left text-sm">
+        <thead><tr><th className="w-44 p-3 font-medium text-[#747976]">Metric</th>{items.map(item => <th className="min-w-48 p-3 font-medium" key={item.firm.id}>
+          <div className="flex items-center justify-between gap-2"><span className="truncate text-[#f1f3f2]">{item.firm.name}</span><button onClick={() => onRemoveItem(item.firm.id)} aria-label={`Remove ${item.firm.name}`} className="text-[#747976] hover:text-[#f1f3f2]">×</button></div>
+          <select aria-label={`Plan for ${item.firm.name}`} className="mt-3 w-full rounded-lg border border-[#2b2e2c] bg-[#202321] p-2 text-xs text-[#f1f3f2]" value={item.plan.id} onChange={event => { const plan = item.firm.plans.find(plan => plan.id === event.target.value); if (plan) onChangePlan(item.firm.id, plan); }}>{item.firm.plans.map(plan => <option key={plan.id} value={plan.id}>{plan.label}</option>)}</select>
+        </th>)}</tr></thead>
+        <tbody>{metrics.map(([label, get]) => <tr className="border-t border-[#2b2e2c]" key={label}><th className="p-3 font-normal text-[#9a9e9b]">{label}</th>{items.map(item => <td className="p-3 text-[#f1f3f2]" key={item.firm.id}>{displayValue(get(item))}</td>)}</tr>)}</tbody>
+      </table>
+    </div>
+  </div>;
+  return embedded ? content : <div role="dialog" aria-modal="true" aria-label="Firm comparison" className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={onClose}><div className="max-h-[92vh] w-full max-w-6xl overflow-y-auto" onClick={event => event.stopPropagation()}>{content}</div></div>;
 };

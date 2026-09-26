@@ -77,7 +77,7 @@ export const LoyaltyPointsModal: React.FC<LoyaltyPointsModalProps> = ({
             💎
           </div>
           <h3 className="text-2xl font-bold text-[#f1f3f2] tracking-tight">
-            PFM Loyalty Program
+            Signal Props Loyalty Program
           </h3>
           <p className="text-xs text-[#747976] mt-1">
             Earn Loyalty Points (LP) by reviewing prop firms, daily check-ins, and participating in the trading community.

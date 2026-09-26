@@ -46,7 +46,7 @@ export const WeAreHiringModal: React.FC<WeAreHiringModalProps> = ({ isOpen, onCl
             <Briefcase className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-[#f1f3f2] tracking-tight">We're Hiring at PFM</h3>
+            <h3 className="text-xl font-bold text-[#f1f3f2] tracking-tight">We're Hiring at Signal Props</h3>
             <p className="text-xs text-[#747976]">Join the team building the financial data layer for proprietary trading.</p>
           </div>
         </div>

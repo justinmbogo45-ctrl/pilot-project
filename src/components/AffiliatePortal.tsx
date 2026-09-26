@@ -498,7 +498,7 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
             </div>
             <div>
               <div className="text-sm font-bold text-[#f1f3f2] flex items-center gap-2">
-                <span>PFM Partner & Affiliate Program</span>
+                <span>Signal Props Partner & Affiliate Program</span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#3ecf8e]/20 text-[#3ecf8e] border border-emerald-500/40">
                   Earn Up to 25% RevShare
                 </span>
@@ -524,7 +524,7 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-xs font-bold text-[#3ecf8e]">
               <Award className="w-3.5 h-3.5 text-amber-400" />
-              <span>Prop Firm Match Global Partner Network</span>
+              <span>Signal Props Global Partner Network</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#f1f3f2] tracking-tight leading-tight">
@@ -820,7 +820,7 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
                 </div>
                 <div className="flex items-center gap-2">
                   <a
-                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Compare verified prop firms, check pass rates, and get exclusive challenge discounts on Prop Firm Match: ${mainReferralLink}`)}`}
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Compare verified prop firms, check pass rates, and get exclusive challenge discounts on Signal Props: ${mainReferralLink}`)}`}
                     target="_blank"
                     rel="noreferrer"
                     className="p-1.5 rounded-lg bg-[#222522] hover:bg-sky-950 text-[#9a9e9b] hover:text-sky-400 border border-[#333633]/60 transition-colors duration-150 text-xs font-bold"
@@ -1246,7 +1246,7 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
 
                 {/* Central PFM logo badge */}
                 <rect x="40" y="40" width="20" height="20" rx="4" fill="#9333ea" />
-                <text x="50" y="54" fontSize="9" fontWeight="900" textAnchor="middle" fill="#fff">PFM</text>
+                <text x="50" y="54" fontSize="9" fontWeight="900" textAnchor="middle" fill="#fff">SP</text>
 
                 {/* Pattern dots */}
                 <rect x="35" y="10" width="6" height="6" />

@@ -33,7 +33,7 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ firms, o
  const [messages, setMessages] = useState<ChatMessage[]>([
  {
  sender: 'bot',
- text: "👋 Hi Trader! Welcome to Prop Firm Match. Ask me anything about prop firms, live 2026 coupon discounts, payout proof, or EOD vs trailing rules—grounded with real-time Google Search.",
+ text: "👋 Hi Trader! Welcome to Signal Props. Ask me anything about prop firms, live 2026 coupon discounts, payout proof, or EOD vs trailing rules—grounded with real-time Google Search.",
  isGrounded: true,
  },
  ]);
@@ -149,7 +149,7 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ firms, o
  </div>
  <div>
  <div className="flex items-center gap-1.5">
- <span className="font-bold text-xs">PFM Match Assistant</span>
+ <span className="font-bold text-xs">Signal Props Assistant</span>
  <span className="px-1.5 py-0.2 rounded bg-blue-500/30 text-[9px] font-mono border border-blue-300/40">
  gemini-3.5-flash
  </span>

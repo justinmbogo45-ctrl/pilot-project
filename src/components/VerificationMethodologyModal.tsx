@@ -100,7 +100,7 @@ export const VerificationMethodologyModal: React.FC<VerificationMethodologyModal
               <span>Community Sentiment & Trustpilot Scores (10% Weight)</span>
             </div>
             <p className="text-[#747976] leading-relaxed">
-              Aggregated from over 12,000 verified trader reviews across Trustpilot, Discord, and our own PFM verified review system.
+              Aggregated from over 12,000 verified trader reviews across Trustpilot, Discord, and our own Signal Props verified review system.
             </p>
           </div>
 

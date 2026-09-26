@@ -46,7 +46,7 @@ const INITIAL_FILTERS: FilterState = {
 
 export function AppShell() {
   const { userProfile, setUserProfile, rewardPoints } = useAuth();
-  const { firms, loading: catalogLoading, error: catalogError, lastSyncedAt } = useCatalog();
+  const { firms, loading: catalogLoading, error: catalogError } = useCatalog();
 
   // --- Navigation ---
   const [activeTab, setActiveTab] = useState<TabType>('firms');
@@ -57,7 +57,7 @@ export function AppShell() {
   const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
   const [activeSubTab, setActiveSubTab] = useState<SubTabType>('Firms');
   const [activeFilterPill, setActiveFilterPill] = useState<'popular' | 'favorite' | 'new' | 'all'>('all');
-  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
+  const [viewMode, setViewMode] = useState<'table' | 'grid'>('grid');
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
 
   // --- Compare ---
@@ -166,6 +166,11 @@ export function AppShell() {
 
   const handleOpenDetails = (firm: PropFirm, plan: AccountPlan) => setDetailsFirm({ firm, plan });
 
+  const browseFirmsFromComparison = () => {
+    setActiveTab('firms');
+    window.setTimeout(() => document.getElementById('firm-directory')?.scrollIntoView({ behavior: 'smooth' }), 0);
+  };
+
   const handleOpenCalculator = (firm: PropFirm, plan: AccountPlan) => {
     setCalculatorFirm(firm);
     setCalculatorPlan(plan);
@@ -223,15 +228,9 @@ export function AppShell() {
   return (
     <div className="min-h-screen bg-[#171918] text-[#f1f3f2] flex flex-col font-sans selection:bg-emerald-600 selection:text-white">
 
-      <div role="status" className="border-b border-[#2b2e2c] bg-[#1d1f1e] px-6 py-2 text-xs text-[#747976]">
-        <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-x-4 gap-y-1">
-          <span>{catalogLoading ? 'Loading firm catalog…' : catalogError || (!firms.length
-            ? 'The first catalog import is not ready yet. Refresh shortly.'
-            : <>Catalog from <a href="https://propfirmmap.com" target="_blank" rel="noreferrer" className="text-[#9a9e9b] underline underline-offset-2">PropFirmMap</a> · {firms.length} firms · Updated {lastSyncedAt ? new Date(lastSyncedAt).toLocaleString() : 'not yet'} · Source currencies shown</>
-          )}</span>
-          <button onClick={() => setGiveawayModalOpen(true)} className="text-[#9a9e9b] transition-colors hover:text-[#3ecf8e]">Explore the giveaway →</button>
-        </div>
-      </div>
+      {(catalogLoading || catalogError || !firms.length) && <div role="status" className="border-b border-[#2b2e2c] bg-[#1d1f1e] px-6 py-2 text-center text-xs text-[#9a9e9b]">
+        {catalogLoading ? 'Loading firm catalog…' : catalogError || 'The first catalog import is not ready yet. Refresh shortly.'}
+      </div>}
 
       {actionError && (
         <div role="alert" className="bg-red-950/60 border-b border-red-900/30 p-3 text-center text-sm text-red-200">
@@ -281,7 +280,7 @@ export function AppShell() {
           onRemoveItem={id => setComparedItems(prev => prev.filter(it => it.firm.id !== id))}
           onClearAll={() => setComparedItems([])}
           onChangePlan={(id, plan) => setComparedItems(prev => prev.map(it => it.firm.id === id ? { ...it, plan } : it))}
-          onClose={() => setActiveTab('firms')}
+          onClose={browseFirmsFromComparison}
           currency={currency}
         />
       )}

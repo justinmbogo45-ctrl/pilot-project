@@ -83,9 +83,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return <header className="sticky top-0 z-40 border-b border-[#2b2e2c] bg-[#171918]/95 backdrop-blur-lg">
     <div className="mx-auto flex h-[68px] max-w-[1240px] items-center gap-6 px-6 sm:px-8">
-      <button onClick={() => navigate('firms')} className="flex shrink-0 items-center gap-2.5" aria-label="Prop Firm Match home" id="brand-logo">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#3ecf8e]/30 bg-[#3ecf8e]/10 text-xs font-semibold text-[#3ecf8e]">PF</span>
-        <span className="hidden text-[15px] font-semibold tracking-tight text-[#f1f3f2] sm:block">Prop Firm Match</span>
+      <button onClick={() => navigate('firms')} className="flex shrink-0 items-center gap-2.5" aria-label="Signal Props home" id="brand-logo">
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#3ecf8e]/30 bg-[#3ecf8e]/10 text-xs font-semibold text-[#3ecf8e]">SP</span>
+        <span className="hidden text-[15px] font-semibold tracking-tight text-[#f1f3f2] sm:block">Signal Props</span>
       </button>
       <nav aria-label="Primary" className="ml-auto hidden items-center gap-1 lg:flex">
         {nav.map(item => <button key={item.label} onClick={item.action} className={`rounded-md px-2.5 py-2 text-sm transition-colors ${item.active ? 'text-[#3ecf8e]' : 'text-[#9a9e9b] hover:text-[#f1f3f2]'}`}>{item.label}</button>)}

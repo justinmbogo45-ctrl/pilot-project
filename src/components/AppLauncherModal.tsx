@@ -39,7 +39,7 @@ export const AppLauncherModal: React.FC<AppLauncherModalProps> = ({ isOpen, onCl
         <div className="flex items-center justify-between pb-3 border-b border-[#2b2e2c]">
           <div className="flex items-center gap-2 font-bold text-[#f1f3f2] text-sm">
             <Grid className="w-4 h-4 text-[#3ecf8e]" />
-            <span>PFM Ecosystem</span>
+            <span>Signal Props Ecosystem</span>
           </div>
           <button onClick={onClose} className="text-[#747976] hover:text-[#f1f3f2]">
             <X className="w-4 h-4" />

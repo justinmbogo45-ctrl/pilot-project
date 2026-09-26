@@ -61,7 +61,7 @@ export const TutorialsModal: React.FC<TutorialsModalProps> = ({ isOpen, onClose 
             <BookOpen className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-[#f1f3f2] tracking-tight">Prop Firm Match Academy</h3>
+            <h3 className="text-xl font-bold text-[#f1f3f2] tracking-tight">Signal Props Academy</h3>
             <p className="text-xs text-[#747976]">Master prop firm evaluations, contract margins, and withdrawal strategies.</p>
           </div>
         </div>

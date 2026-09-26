@@ -8,6 +8,12 @@ interface ComparisonPreviewProps {
 }
 
 const display = (value: number | null | undefined, suffix = '') => value == null ? '—' : `${value}${suffix}`;
+const displayPrice = (value: number | null, currency: string | null | undefined) => {
+  if (value == null) return '—';
+  if (!currency) return `${value} (currency unavailable)`;
+  try { return new Intl.NumberFormat('en-US', { style: 'currency', currency, maximumFractionDigits: 0 }).format(value); }
+  catch { return `${value} ${currency}`; }
+};
 
 export const ComparisonPreview: React.FC<ComparisonPreviewProps> = ({ firms, onCompare }) => {
   const preview = firms.filter(f => f.plans.length > 0).slice(0, 3);
@@ -31,7 +37,7 @@ export const ComparisonPreview: React.FC<ComparisonPreviewProps> = ({ firms, onC
               const price = plan.discountedPrice ?? plan.originalPrice;
               return <tr key={firm.id} className="border-b border-[#2b2e2c] last:border-0">
                 <td className="py-5 pr-3"><div className="flex items-center gap-2.5"><img src={firm.logo} alt="" className="h-8 w-8 rounded-md bg-[#202321] object-contain" /><span className="max-w-[130px] truncate text-sm font-medium text-[#f1f3f2]">{firm.name}</span></div></td>
-                <td className="py-5 pr-3 text-sm text-[#f1f3f2]">{price == null ? '—' : new Intl.NumberFormat('en-US', { style: 'currency', currency: plan.currency || 'USD', maximumFractionDigits: 0 }).format(price)}</td>
+                <td className="py-5 pr-3 text-sm text-[#f1f3f2]">{displayPrice(price, plan.currency)}</td>
                 <td className="py-5 pr-3 text-sm text-[#9a9e9b]">{display(plan.step1TargetPercent, '%')}</td>
                 <td className="py-5 pr-3 text-sm text-[#3ecf8e]">{display(plan.profitSplit, '%')}</td>
                 <td className="py-5 text-right text-sm text-[#f1f3f2]">{firm.trustpilotScore == null ? '—' : <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-[#3ecf8e] text-[#3ecf8e]" />{firm.trustpilotScore.toFixed(1)}</span>}</td>

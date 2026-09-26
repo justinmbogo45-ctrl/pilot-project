@@ -4,11 +4,12 @@ import type { PropFirm } from '../types';
 export const TrustStats: React.FC<{ firms: PropFirm[] }> = ({ firms }) => {
   const challengeCount = firms.reduce((sum, firm) => sum + firm.plans.length, 0);
   const ratedCount = firms.filter(firm => firm.trustpilotScore != null).length;
+  const offerCount = firms.reduce((sum, firm) => sum + (Array.isArray(firm.sourceData?.offers) ? firm.sourceData.offers.length : 0), 0);
   const stats = [
-    { value: firms.length.toLocaleString(), label: 'Firms in catalog' },
-    { value: challengeCount.toLocaleString(), label: 'Challenge plans' },
-    { value: ratedCount.toLocaleString(), label: 'Firms with ratings' },
-    { value: String(new Date().getFullYear()), label: 'Current offers' },
+    { value: firms.length.toLocaleString(), label: 'Firms to explore' },
+    { value: challengeCount.toLocaleString(), label: 'Challenges to compare' },
+    { value: ratedCount.toLocaleString(), label: 'Rated firms' },
+    { value: offerCount.toLocaleString(), label: 'Active deals' },
   ];
   return <section className="mx-auto max-w-[1240px] px-6 sm:px-8" aria-label="Catalog statistics">
     <div className="grid grid-cols-2 border-y border-[#2b2e2c] py-8 md:grid-cols-4 md:py-10">

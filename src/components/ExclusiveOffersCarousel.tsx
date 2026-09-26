@@ -15,7 +15,7 @@ export const ExclusiveOffersCarousel: React.FC<ExclusiveOffersCarouselProps> = (
   const pages = Math.max(1, Math.ceil(eligible.length / 6));
   const current = Math.min(page, pages - 1);
   const visible = eligible.slice(current * 6, current * 6 + 6);
-  return <section id="current-offers" className="mx-auto max-w-[1240px] px-6 py-24 sm:px-8 lg:py-32">
+  return <section id="current-offers" className="scroll-mt-20 mx-auto max-w-[1240px] px-6 py-24 sm:px-8 lg:py-32">
     <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#3ecf8e]">Fresh from the catalog</p>
