@@ -32,17 +32,17 @@ export const MarketTicker: React.FC<MarketTickerProps> = ({
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
               <span className="text-slate-200 font-semibold">{totalFirmsCount} Active Prop Firms</span>
-              <span className="text-slate-500">Tracked Live</span>
+              <span className="text-slate-500">In latest import</span>
             </div>
 
             <div className="hidden sm:flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-slate-300 font-medium">$540M+ Verified Payouts</span>
+              <span className="text-slate-300 font-medium">Source: PropFirmMap</span>
             </div>
 
             <div className="hidden md:flex items-center gap-1.5">
               <Award className="w-3.5 h-3.5 text-amber-400" />
-              <span className="text-slate-300">4.72 / 5.0 Avg TrustScore</span>
+              <span className="text-slate-300">Ratings from source data</span>
             </div>
           </div>
 
@@ -52,7 +52,7 @@ export const MarketTicker: React.FC<MarketTickerProps> = ({
               className="group flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
             >
               <Zap className="w-3.5 h-3.5 text-amber-400 animate-bounce" />
-              <span>Up to 80% OFF flash discounts active</span>
+              <span>Browse current offers</span>
               <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </button>
           </div>

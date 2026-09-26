@@ -16,24 +16,9 @@ export const ExclusiveOffersCarousel: React.FC<ExclusiveOffersCarouselProps> = (
   const [currentPage, setCurrentPage] = useState(0);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
-  // Top 8 firms for the September Futures Offers carousel from the screenshots
-  const targetIds = [
-    'tradeify',
-    'lucid-trading',
-    'fundednext-futures',
-    'futures-elite',
-    'my-funded-futures',
-    'apex-trader-funding',
-    'tradeday',
-    'take-profit-trader',
-  ];
-
-  const carouselFirms = targetIds
-    .map((id) => firms.find((f) => f.id === id))
-    .filter(Boolean) as PropFirm[];
-
-  // 8 items per page
-  const totalPages = 3;
+  const eligibleFirms = firms.filter(f=>f.exclusiveDiscount);
+  const totalPages = Math.max(1, Math.ceil(eligibleFirms.length / 8));
+  const carouselFirms = eligibleFirms.slice((currentPage % totalPages) * 8, (currentPage % totalPages) * 8 + 8);
 
   const handleCopyCode = (e: React.MouseEvent, code: string) => {
     e.stopPropagation();
@@ -62,7 +47,7 @@ export const ExclusiveOffersCarousel: React.FC<ExclusiveOffersCarouselProps> = (
           {/* Center Title */}
           <div className="flex items-center gap-2">
             <h2 className="text-base sm:text-lg font-bold text-white tracking-tight flex items-center gap-1.5">
-              <span>Exclusive September Futures Offers</span>
+              <span>Current Firm Offers</span>
               <span>🔥</span>
             </h2>
           </div>
@@ -79,7 +64,7 @@ export const ExclusiveOffersCarousel: React.FC<ExclusiveOffersCarouselProps> = (
 
             {/* Pagination dots */}
             <div className="flex items-center gap-1.5 px-1">
-              {[0, 1, 2].map((dot) => (
+              {Array.from({length:totalPages},(_,i)=>i).map((dot) => (
                 <span
                   key={dot}
                   onClick={() => setCurrentPage(dot)}
@@ -106,7 +91,7 @@ export const ExclusiveOffersCarousel: React.FC<ExclusiveOffersCarouselProps> = (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-4">
           {carouselFirms.map((firm) => {
             const promo = firm.exclusiveDiscount;
-            const isCopied = copiedCode === (promo?.code || 'MATCH');
+            const isCopied = copiedCode === (promo?.code || '');
 
             return (
               <div
@@ -151,18 +136,18 @@ export const ExclusiveOffersCarousel: React.FC<ExclusiveOffersCarouselProps> = (
                 {/* Offer & Coupon Copy Bar */}
                 <div className="mt-3.5 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
                   <div className="text-xs font-bold text-pink-400">
-                    {promo?.discountPercent || 40}% OFF
+                    {promo?.discountPercent}% OFF
                   </div>
 
                   <button
-                    onClick={(e) => handleCopyCode(e, promo?.code || 'MATCH')}
+                    onClick={(e) => handleCopyCode(e, promo?.code || '')}
                     className={`px-2.5 py-1 rounded-md text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
                       isCopied
                         ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
                         : 'bg-[#22253f] hover:bg-purple-900/50 text-slate-200 border border-purple-800/40'
                     }`}
                   >
-                    <span>{promo?.code || 'MATCH'}</span>
+                    <span>{promo?.code || ''}</span>
                     {isCopied ? (
                       <Check className="w-3 h-3 text-emerald-400" />
                     ) : (

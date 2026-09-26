@@ -58,10 +58,10 @@ export const FirmTableView: React.FC<FirmTableViewProps> = ({
       return savedFirmIds.includes(firm.id);
     }
     if (activeFilterPill === 'new') {
-      return (firm.yearsInOperation || 1) <= 1;
+      return firm.yearsInOperation != null && firm.yearsInOperation <= 1;
     }
     if (activeFilterPill === 'popular') {
-      return (firm.popularityLikes || 0) >= 20000;
+      return firm.trustpilotReviewsCount != null && firm.trustpilotReviewsCount >= 1000;
     }
     return true;
   });
@@ -141,7 +141,7 @@ export const FirmTableView: React.FC<FirmTableViewProps> = ({
 
           <div className="flex items-center gap-1.5 text-[11px] text-slate-400 bg-slate-900/80 px-2.5 py-1 rounded-full border border-slate-800">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Live Data updated 8 min ago</span>
+            <span>Latest imported catalog</span>
           </div>
         </div>
 
@@ -185,7 +185,7 @@ export const FirmTableView: React.FC<FirmTableViewProps> = ({
                   const defaultPlan = firm.plans[0];
                   const isSaved = savedFirmIds.includes(firm.id);
                   const promo = firm.exclusiveDiscount;
-                  const isCopied = copiedCode === (promo?.code || 'MATCH');
+                  const isCopied = copiedCode === (promo?.code || '');
 
                   // Medals
                   const rankNum = firm.rankPosition || index + 1;
@@ -243,7 +243,7 @@ export const FirmTableView: React.FC<FirmTableViewProps> = ({
                                 }`} 
                               />
                               <span className="font-medium">
-                                {((firm.popularityLikes || 10000) + (isSaved ? 1 : 0)).toLocaleString()}
+                                {isSaved ? 'Saved' : 'Save'}
                               </span>
                             </div>
                           </div>
@@ -256,7 +256,7 @@ export const FirmTableView: React.FC<FirmTableViewProps> = ({
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-1.5">
                             <span className="px-1.5 py-0.5 rounded bg-purple-950/80 border border-purple-500/40 text-purple-200 font-bold text-xs">
-                              {firm.trustpilotScore}
+                              {firm.trustpilotScore ?? '—'}
                             </span>
                             <div className="flex items-center text-purple-400">
                               <Star className="w-3 h-3 fill-purple-400" />
@@ -267,7 +267,7 @@ export const FirmTableView: React.FC<FirmTableViewProps> = ({
                             </div>
                           </div>
                           <span className="text-[11px] text-slate-400">
-                            {firm.trustpilotReviewsCount} reviews
+                            {firm.trustpilotReviewsCount ?? '—'} reviews
                           </span>
                         </div>
                       </td>
@@ -275,7 +275,7 @@ export const FirmTableView: React.FC<FirmTableViewProps> = ({
                       {/* COUNTRY */}
                       <td className="py-3.5 px-3">
                         <div className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
-                          <span>{firm.countryFlag || '🇺🇸'}</span>
+                          <span>{firm.countryFlag || '🌐'}</span>
                           <span>{firm.headquarters}</span>
                         </div>
                       </td>
@@ -283,14 +283,14 @@ export const FirmTableView: React.FC<FirmTableViewProps> = ({
                       {/* YEARS IN OPERATION */}
                       <td className="py-3.5 px-3 text-center">
                         <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-800 text-slate-300 font-bold text-xs border border-slate-700">
-                          {firm.yearsInOperation || 1}
+                          {firm.yearsInOperation ?? '—'}
                         </span>
                       </td>
 
                       {/* ASSETS */}
                       <td className="py-3.5 px-3">
                         <div className="flex flex-wrap items-center gap-1 max-w-[210px]">
-                          {(firm.assetTags || ['Futures', 'Indices', 'Metals']).slice(0, 4).map((tag, idx) => (
+                          {(firm.assetTags || []).slice(0, 4).map((tag, idx) => (
                             <span
                               key={idx}
                               className="px-2 py-0.5 rounded-full bg-[#1b1f33] text-slate-300 text-[10px] font-medium border border-slate-700/60 whitespace-nowrap"
@@ -329,7 +329,7 @@ export const FirmTableView: React.FC<FirmTableViewProps> = ({
                       <td className="py-3.5 px-3">
                         <div className="flex flex-col">
                           <span className="font-extrabold text-white text-xs tracking-tight">
-                            {firm.maxAllocation || '$1.5M'}
+                            {firm.maxAllocation || 'Not provided'}
                           </span>
                           <div className="w-12 h-1 bg-gradient-to-r from-purple-500 to-transparent rounded-full mt-1"></div>
                         </div>
@@ -339,18 +339,19 @@ export const FirmTableView: React.FC<FirmTableViewProps> = ({
                       <td className="py-3.5 px-3">
                         <div className="flex items-center gap-1.5">
                           <span className="text-xs font-bold text-pink-400 whitespace-nowrap">
-                            {promo?.discountPercent || 40}% OFF
+                            {promo ? `${promo.discountPercent}% OFF` : 'No code provided'}
                           </span>
 
                           <button
-                            onClick={(e) => handleCopyCode(e, promo?.code || 'MATCH')}
+                            disabled={!promo}
+                            onClick={(e) => handleCopyCode(e, promo?.code || '')}
                             className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold flex items-center gap-1 transition-all ${
                               isCopied
                                 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
                                 : 'bg-[#1e2238] hover:bg-purple-900/50 text-slate-200 border border-purple-800/40'
                             }`}
                           >
-                            <span>{promo?.code || 'MATCH'}</span>
+                            <span>{promo?.code || ''}</span>
                             {isCopied ? (
                               <Check className="w-3 h-3 text-emerald-400" />
                             ) : (
@@ -363,7 +364,7 @@ export const FirmTableView: React.FC<FirmTableViewProps> = ({
                       {/* ACTIONS */}
                       <td className="py-3.5 px-4 text-center">
                         <div className="flex items-center justify-center gap-1.5">
-                          {onOpenPriceAlert && (
+                          {onOpenPriceAlert && defaultPlan?.discountedPrice != null && (
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();

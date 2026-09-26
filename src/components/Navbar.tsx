@@ -14,7 +14,7 @@ import {
   ChevronDown,
   Bell
 } from 'lucide-react';
-import { UserProfileData, logoutFirebase } from '../lib/firebase';
+import { UserProfileData, logoutFirebase } from '../lib/api';
 
 interface NavbarProps {
   activeTab: 'firms' | 'compare' | 'quiz' | 'calculator' | 'discounts' | 'payouts' | 'affiliates';

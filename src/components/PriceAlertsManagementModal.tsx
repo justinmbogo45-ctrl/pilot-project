@@ -14,7 +14,7 @@ import {
   Tag
 } from 'lucide-react';
 import { PriceAlert, PropFirm, AccountPlan } from '../types';
-import { UserProfileData, updatePriceAlertInFirestore, deletePriceAlertFromFirestore } from '../lib/firebase';
+import { UserProfileData, updatePriceAlert, deletePriceAlert } from '../lib/api';
 
 interface PriceAlertsManagementModalProps {
   isOpen: boolean;
@@ -44,6 +44,7 @@ export const PriceAlertsManagementModal: React.FC<PriceAlertsManagementModalProp
   onAlertDeleted,
 }) => {
   const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'paused'>('all');
+  const [saveError, setSaveError] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [testingId, setTestingId] = useState<string | null>(null);
 
@@ -66,25 +67,21 @@ export const PriceAlertsManagementModal: React.FC<PriceAlertsManagementModalProp
 
   const handleToggleActive = async (alert: PriceAlert) => {
     const updated = { ...alert, active: !alert.active };
-    if (onAlertUpdated) {
-      onAlertUpdated(updated);
-    }
     try {
-      await updatePriceAlertInFirestore(alert.id, { active: !alert.active });
+      await updatePriceAlert(alert.id, { active: !alert.active });
+      onAlertUpdated?.(updated);
     } catch (err) {
-      console.error('Error toggling alert active state:', err);
+      setSaveError((err as Error).message);
     }
   };
 
   const handleDelete = async (alertId: string) => {
     setDeletingId(alertId);
-    if (onAlertDeleted) {
-      onAlertDeleted(alertId);
-    }
     try {
-      await deletePriceAlertFromFirestore(alertId);
+      await deletePriceAlert(alertId);
+      onAlertDeleted?.(alertId);
     } catch (err) {
-      console.error('Error deleting alert:', err);
+      setSaveError((err as Error).message);
     } finally {
       setDeletingId(null);
     }
@@ -102,6 +99,7 @@ export const PriceAlertsManagementModal: React.FC<PriceAlertsManagementModalProp
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-[#0f1222] border border-purple-500/40 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden text-slate-100 flex flex-col max-h-[90vh]">
         
+        {saveError && <p role="alert" className="text-red-300 p-3">{saveError}</p>}
         {/* Header */}
         <div className="px-6 py-4 bg-gradient-to-r from-purple-950/60 via-indigo-950/40 to-purple-950/60 border-b border-purple-500/30 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -116,7 +114,7 @@ export const PriceAlertsManagementModal: React.FC<PriceAlertsManagementModalProp
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                Manage your real-time Firestore price drop and discount alert preferences.
+                Manage your saved price and discount alert preferences.
               </p>
             </div>
           </div>
@@ -174,7 +172,7 @@ export const PriceAlertsManagementModal: React.FC<PriceAlertsManagementModalProp
 
           <div className="text-[11px] text-slate-400 hidden sm:flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Synced to Firestore</span>
+            <span>Saved to your account</span>
           </div>
         </div>
 
@@ -252,13 +250,13 @@ export const PriceAlertsManagementModal: React.FC<PriceAlertsManagementModalProp
 
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
                           <div>
-                            Current Price: <span className="font-bold text-white">${alert.currentPrice}</span>
+                            Current Price: <span className="font-bold text-white">{alert.currentPrice ?? 'Not provided'} {alert.currency || ''}</span>
                           </div>
 
                           {alert.targetPrice && (
                             <div className="flex items-center gap-1 text-emerald-400">
                               <TrendingDown className="w-3.5 h-3.5" />
-                              <span>Target: <strong className="text-white">${alert.targetPrice}</strong></span>
+                              <span>Target: <strong className="text-white">{alert.targetPrice} {alert.currency || ''}</strong></span>
                             </div>
                           )}
 
@@ -333,7 +331,7 @@ export const PriceAlertsManagementModal: React.FC<PriceAlertsManagementModalProp
                         type="button"
                         onClick={() => handleDelete(alert.id)}
                         disabled={deletingId === alert.id}
-                        title="Delete this alert from Firestore"
+                        title="Delete this alert"
                         className="p-1.5 rounded-lg border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all cursor-pointer disabled:opacity-50"
                       >
                         <Trash2 className="w-4 h-4" />

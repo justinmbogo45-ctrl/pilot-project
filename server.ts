@@ -4,6 +4,9 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
 import { createServer as createViteServer } from 'vite';
+import { migrate, pool } from './backend/db';
+import { createDataRouter } from './backend/routes';
+import { syncCatalog } from './backend/sync';
 
 dotenv.config();
 
@@ -17,14 +20,14 @@ app.use(express.json());
 
 // Initialize GoogleGenAI client with User-Agent header per gemini-api guidelines
 const apiKey = process.env.GEMINI_API_KEY || '';
-const ai = new GoogleGenAI({
+const ai = apiKey ? new GoogleGenAI({
   apiKey: apiKey,
   httpOptions: {
     headers: {
       'User-Agent': 'aistudio-build',
     },
   },
-});
+}) : null;
 
 interface GroundingWebChunk {
   uri?: string;
@@ -41,6 +44,7 @@ interface GroundingChunk {
  */
 app.post('/api/ai/search-grounding', async (req: Request, res: Response) => {
   try {
+    if (!ai) { res.status(503).json({error:'AI search is not configured'}); return; }
     const { query, firmName } = req.body;
 
     if (!query || typeof query !== 'string') {
@@ -110,6 +114,7 @@ app.post('/api/ai/search-grounding', async (req: Request, res: Response) => {
  */
 app.post('/api/ai/chat', async (req: Request, res: Response) => {
   try {
+    if (!ai) { res.status(503).json({error:'AI chat is not configured'}); return; }
     const { message, history } = req.body;
 
     if (!message || typeof message !== 'string') {
@@ -197,6 +202,7 @@ app.post('/api/ai/chat', async (req: Request, res: Response) => {
  */
 app.post('/api/ai/firm-intel', async (req: Request, res: Response) => {
   try {
+    if (!ai) { res.status(503).json({error:'AI research is not configured'}); return; }
     const { firmName } = req.body;
 
     if (!firmName || typeof firmName !== 'string') {
@@ -262,6 +268,20 @@ app.post('/api/ai/firm-intel', async (req: Request, res: Response) => {
 
 // Server boot: Mount Vite in development or static dist in production
 async function startServer() {
+  await migrate();
+  app.use('/api', createDataRouter());
+  if (process.env.CATALOG_SYNC_ENABLED !== 'false') {
+    const hours = Number(process.env.CATALOG_SYNC_INTERVAL_HOURS || 24);
+    if (!Number.isFinite(hours) || hours < 1 || hours > 168) throw new Error('CATALOG_SYNC_INTERVAL_HOURS must be between 1 and 168');
+    const refresh = async () => {
+      try {
+        const last = await pool.query(`SELECT finished_at FROM catalog_sync_runs WHERE status='succeeded' ORDER BY finished_at DESC LIMIT 1`);
+        if (!last.rowCount || Date.now() - new Date(last.rows[0].finished_at).getTime() >= hours * 3600000) await syncCatalog();
+      } catch { console.error('Catalog sync failed; keeping the last successful catalog. Run db:sync to retry.'); }
+    };
+    void refresh();
+    setInterval(() => void refresh(), 3600000).unref();
+  }
   const isProduction = process.env.NODE_ENV === 'production';
 
   if (!isProduction) {

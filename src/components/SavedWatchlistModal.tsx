@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { X, Bookmark, ExternalLink, Trash2, Scale } from 'lucide-react';
 import { PropFirm, AccountPlan } from '../types';
+import { planPrice } from '../lib/catalog';
 
 interface SavedWatchlistModalProps {
   savedFirmIds: string[];
@@ -82,9 +83,9 @@ export const SavedWatchlistModal: React.FC<SavedWatchlistModalProps> = ({
                     <div>
                       <h4 className="font-bold text-white text-xs">{firm.name}</h4>
                       <div className="text-[11px] text-slate-400">
-                        {defaultPlan.label} from{' '}
+                        {defaultPlan?.label || 'No plans'} from{' '}
                         <strong className="text-emerald-400">
-                          {currencySymbol}{Math.round(defaultPlan.discountedPrice * currencyRate)}
+                          {planPrice(defaultPlan)}
                         </strong>
                       </div>
                     </div>

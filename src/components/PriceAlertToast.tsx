@@ -64,9 +64,9 @@ export const PriceAlertToast: React.FC<PriceAlertToastProps> = ({
 
               <p className="text-xs text-slate-300">
                 Price dropped from{' '}
-                <span className="line-through text-slate-400">${alert.currentPrice}</span> to{' '}
+                <span className="line-through text-slate-400">{alert.currentPrice} {alert.currency || ''}</span> to{' '}
                 <span className="font-extrabold text-emerald-400 text-sm">
-                  ${simulatedNewPrice}
+                  {simulatedNewPrice} {alert.currency || ''}
                 </span>{' '}
                 <span className="text-emerald-300 font-bold">(-{discountPercent}%)</span>!
               </p>

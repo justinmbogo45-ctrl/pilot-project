@@ -13,6 +13,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { PropFirm, AccountPlan } from '../types';
+import { planPrice } from '../lib/catalog';
 
 interface FirmMatchQuizProps {
   firms: PropFirm[];
@@ -42,7 +43,7 @@ export const FirmMatchQuiz: React.FC<FirmMatchQuizProps> = ({
 
   // Match Scoring Algorithm
   const calculateMatches = () => {
-    return firms.map((firm) => {
+    return firms.filter(f=>f.plans.length>0).map((firm) => {
       let score = 50; // base score
       const reasons: string[] = [];
 
@@ -84,7 +85,7 @@ export const FirmMatchQuiz: React.FC<FirmMatchQuizProps> = ({
       if (newsTrading) {
         if (firm.rules.newsTrading) {
           score += 10;
-          reasons.push('Zero restrictions on news trading');
+          reasons.push('News trading allowed; check the rule notes');
         } else {
           score -= 10;
         }
@@ -94,7 +95,7 @@ export const FirmMatchQuiz: React.FC<FirmMatchQuizProps> = ({
       if (algoTrading) {
         if (firm.rules.eaAlgoTrading) {
           score += 10;
-          reasons.push('Permits automated bots and trade copiers');
+          reasons.push('Automated trading allowed; check the rule notes');
         } else {
           score -= 20;
         }
@@ -112,17 +113,17 @@ export const FirmMatchQuiz: React.FC<FirmMatchQuizProps> = ({
 
       // Priority bonus
       if (priority === 'reputation') {
-        if (firm.trustpilotScore >= 4.7) {
+        if (firm.trustpilotScore != null && firm.trustpilotScore >= 4.7) {
           score += 15;
           reasons.push(`Top-tier ${firm.trustpilotScore} Trustpilot rating`);
         }
       } else if (priority === 'split') {
-        if (firm.maxProfitSplit >= 90) {
+        if (firm.maxProfitSplit != null && firm.maxProfitSplit >= 90) {
           score += 15;
           reasons.push(`High profit split up to ${firm.maxProfitSplit}%`);
         }
       } else if (priority === 'payout') {
-        const minPayout = Math.min(...firm.plans.map((p) => p.firstPayoutDays));
+        const minPayout = Math.min(...firm.plans.map((p) => p.firstPayoutDays).filter((v):v is number=>v!=null));
         if (minPayout <= 7) {
           score += 15;
           reasons.push('Fast payout cycle (under 7 days)');
@@ -455,7 +456,7 @@ export const FirmMatchQuiz: React.FC<FirmMatchQuizProps> = ({
 
           <div className="grid grid-cols-1 gap-4">
             {results.slice(0, 3).map((item, rank) => {
-              const displayPrice = Math.round(item.plan.discountedPrice * currencyRate);
+              const displayPrice = planPrice(item.plan);
               return (
                 <div
                   key={item.firm.id}
@@ -494,7 +495,7 @@ export const FirmMatchQuiz: React.FC<FirmMatchQuizProps> = ({
                         <span>{item.matchPercentage}% Match</span>
                       </div>
                       <div className="text-[11px] text-slate-400 mt-1">
-                        {item.plan.label} Account: <strong className="text-white">{currencySymbol}{displayPrice}</strong>
+                        {item.plan.label} Account: <strong className="text-white">{displayPrice}</strong>
                       </div>
                     </div>
                   </div>

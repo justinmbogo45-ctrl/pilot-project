@@ -1,0 +1,30 @@
+import { renderToStaticMarkup } from 'react-dom/server';
+import React from 'react';
+import type { PropFirm } from '../src/types';
+import { mapCatalogFirm } from '../src/lib/catalog';
+import { FirmCard } from '../src/components/FirmCard';
+import { FirmDetailsModal } from '../src/components/FirmDetailsModal';
+import { FeeCalculator } from '../src/components/FeeCalculator';
+import { ComparisonMatrixModal } from '../src/components/ComparisonMatrixModal';
+import { DiscountsHub } from '../src/components/DiscountsHub';
+import { FirmMatchQuiz } from '../src/components/FirmMatchQuiz';
+import { FirmTableView } from '../src/components/FirmTableView';
+const base=process.env.CHECK_APP_URL || 'http://127.0.0.1:3000';
+const response=await fetch(`${base}/api/catalog`);
+if(!response.ok)throw new Error(`Catalog returned ${response.status}`);
+const payload=await response.json();
+const firms:PropFirm[]=payload.data.map(mapCatalogFirm);
+if(!firms.length)throw new Error('Catalog is empty');
+const noop=()=>{};
+for(const firm of firms){
+  const card=renderToStaticMarkup(<FirmCard firm={firm} currency="USD" isCompared={false} isSaved={false} onToggleCompare={noop} onToggleSave={noop} onOpenDetails={noop} onOpenCalculatorWithPlan={noop}/>);
+  const detail=renderToStaticMarkup(<FirmDetailsModal firm={firm} currency="USD" onClose={noop} onOpenCalculator={noop} onOpenWriteReview={noop}/>);
+  if(card.includes('NaN')||detail.includes('NaN'))throw new Error(`Invalid numeric display for ${firm.id}`);
+}
+renderToStaticMarkup(<FeeCalculator firms={firms} currency="USD"/>);
+renderToStaticMarkup(<FeeCalculator firms={[]} currency="USD"/>);
+renderToStaticMarkup(<DiscountsHub firms={firms} onSelectFirm={noop}/>);
+renderToStaticMarkup(<FirmMatchQuiz firms={firms} currency="USD" onSelectFirm={noop}/>);
+renderToStaticMarkup(<ComparisonMatrixModal items={firms.filter(f=>f.plans.length).slice(0,4).map(f=>({firm:f,plan:f.plans[0]}))} currency="USD" onRemoveItem={noop} onChangePlan={noop} onClearAll={noop} onClose={noop}/>);
+renderToStaticMarkup(<FirmTableView preferredSize="All" firms={firms} currency="USD" savedFirmIds={[]} onToggleSave={noop} onOpenDetails={noop} onOpenFilterDrawer={noop} onOpenMethodologyModal={noop} activeFilterPill="all" setActiveFilterPill={noop}/>);
+console.log(`Rendered ${firms.length} imported firm cards/details plus catalog, comparison, discounts, quiz and calculator views without invalid numbers.`);

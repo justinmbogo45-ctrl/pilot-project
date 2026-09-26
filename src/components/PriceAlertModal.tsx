@@ -12,7 +12,8 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { PropFirm, AccountPlan, PriceAlert, AlertType, AlertChannel } from '../types';
-import { UserProfileData, createPriceAlertInFirestore } from '../lib/firebase';
+import { UserProfileData, createPriceAlert } from '../lib/api';
+import { planPrice, displayValue } from '../lib/catalog';
 
 interface PriceAlertModalProps {
   isOpen: boolean;
@@ -65,7 +66,7 @@ export const PriceAlertModal: React.FC<PriceAlertModalProps> = ({
 
   const currentPlan = currentFirm?.plans?.find((p) => p.id === selectedPlanId) || currentFirm?.plans?.[0];
 
-  const currentPrice = currentPlan?.discountedPrice || currentPlan?.originalPrice || 150;
+  const currentPrice = currentPlan?.discountedPrice ?? 0;
 
   // Form Fields
   const [email, setEmail] = useState(userProfile?.email || '');
@@ -112,6 +113,8 @@ export const PriceAlertModal: React.FC<PriceAlertModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!userProfile) { onOpenAuth(); return; }
+    if (currentPlan?.discountedPrice == null) { setErrorMsg('This plan has no published price.'); return; }
     if (!email || !email.includes('@')) {
       setErrorMsg('Please enter a valid email address.');
       return;
@@ -135,6 +138,7 @@ export const PriceAlertModal: React.FC<PriceAlertModalProps> = ({
       planId: currentPlan.id,
       planName: `${currentPlan.label} Plan`,
       planSize: currentPlan.size,
+      currency: currentPlan.currency,
       currentPrice,
       targetPrice: alertType === 'price_drop' ? targetPrice : undefined,
       alertType,
@@ -144,7 +148,7 @@ export const PriceAlertModal: React.FC<PriceAlertModalProps> = ({
     };
 
     try {
-      const createdId = await createPriceAlertInFirestore(newAlertData);
+      const createdId = await createPriceAlert(newAlertData);
       const fullAlert: PriceAlert = {
         ...newAlertData,
         id: createdId,
@@ -156,17 +160,7 @@ export const PriceAlertModal: React.FC<PriceAlertModalProps> = ({
       }
       setIsSuccess(true);
     } catch (err: any) {
-      console.error('Error creating price alert in Firestore:', err);
-      // Even if firestore error occurs (e.g. offline/rules), provide optimistic success fallback
-      const fallbackAlert: PriceAlert = {
-        ...newAlertData,
-        id: `local-${Date.now()}`,
-        createdAt: new Date().toISOString(),
-      };
-      if (onAlertCreated) {
-        onAlertCreated(fallbackAlert);
-      }
-      setIsSuccess(true);
+      setErrorMsg(err.message || 'Could not save the alert. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -290,13 +284,13 @@ export const PriceAlertModal: React.FC<PriceAlertModalProps> = ({
                   <div>
                     <div className="font-bold text-white text-xs">{currentFirm?.name} - {currentPlan?.label}</div>
                     <div className="text-[11px] text-slate-400">
-                      Step 1 Target: {currentPlan?.step1TargetPercent}% | Max Drawdown: {currentPlan?.maxDrawdownPercent}%
+                      Profit target: {displayValue(currentPlan?.sourcePlan?.profit_target)} | Max drawdown: {displayValue(currentPlan?.sourcePlan?.max_total_drawdown)}
                     </div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-extrabold text-emerald-400">${currentPrice}</div>
-                  {currentPlan && currentPlan.originalPrice > currentPrice && (
+                  <div className="text-sm font-extrabold text-emerald-400">{planPrice(currentPlan)}</div>
+                  {currentPlan && currentPlan.originalPrice != null && currentPlan.originalPrice > currentPrice && (
                     <div className="text-[10px] text-slate-500 line-through">${currentPlan.originalPrice}</div>
                   )}
                 </div>
@@ -306,7 +300,7 @@ export const PriceAlertModal: React.FC<PriceAlertModalProps> = ({
               <div className="space-y-2">
                 <label className="text-slate-300 font-semibold block flex items-center gap-1.5">
                   <Sliders className="w-3.5 h-3.5 text-purple-400" />
-                  <span>Notify Me When:</span>
+                  <span>Notify Me When: (target in {currentPlan?.currency || 'source currency'})</span>
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   <button
@@ -498,7 +492,7 @@ export const PriceAlertModal: React.FC<PriceAlertModalProps> = ({
                   className="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-purple-900/20 transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   <Bell className="w-4 h-4" />
-                  <span>{isSubmitting ? 'Saving Alert to Firestore...' : 'Subscribe to Price Alerts (+25 LP)'}</span>
+                  <span>{isSubmitting ? 'Saving alert...' : 'Subscribe to Price Alerts (+25 LP)'}</span>
                 </button>
               </div>
 

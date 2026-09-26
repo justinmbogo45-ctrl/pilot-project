@@ -39,13 +39,13 @@ import {
 import {
   UserProfileData,
   getOrCreateAffiliateProfile,
-  updateAffiliateProfileInFirestore,
-  recordAffiliateActivityInFirestore,
-  requestAffiliatePayoutInFirestore,
+  updateAffiliateProfile,
+  recordAffiliateActivity,
+  requestAffiliatePayout,
   subscribeAffiliateProfile,
   subscribeAffiliateActivities,
   subscribeAffiliatePayouts
-} from '../lib/firebase';
+} from '../lib/api';
 import { AffiliateAnalyticsDashboard } from './AffiliateAnalyticsDashboard';
 
 interface AffiliatePortalProps {
@@ -192,7 +192,7 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
       return;
     }
 
-    // Authenticated user: load from Firestore
+    // Authenticated user: load from PostgreSQL
     let unsubProfile: (() => void) | undefined;
     let unsubActivities: (() => void) | undefined;
     let unsubPayouts: (() => void) | undefined;
@@ -222,7 +222,7 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
           setPayouts(pays);
         });
       } catch (err) {
-        console.error('Failed to init affiliate Firestore data:', err);
+        console.error('Failed to init affiliate PostgreSQL data:', err);
       }
     };
 
@@ -289,13 +289,15 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
     showToast('Vanity referral link updated successfully!');
 
     if (userProfile) {
-      await updateAffiliateProfileInFirestore(userProfile.uid, { customSlug: sanitized });
+      await updateAffiliateProfile(userProfile.uid, { customSlug: sanitized });
     }
   };
 
   // Simulation: Test Click
   const handleSimulateClick = async () => {
     if (!profile) return;
+    if (userProfile) { showToast('Simulation is available only in guest demo mode.'); return; }
+    if (!firms.length) return;
     setSimulating(true);
 
     const newClicks = profile.totalClicks + 1;
@@ -315,15 +317,7 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
       status: 'completed',
     };
 
-    if (userProfile) {
-      await recordAffiliateActivityInFirestore(newActivity);
-      await updateAffiliateProfileInFirestore(userProfile.uid, {
-        totalClicks: newClicks,
-        conversionRate: newRate,
-      });
-    } else {
-      setActivities((prev) => [{ id: 'act-' + Date.now(), ...newActivity }, ...prev]);
-    }
+    setActivities((prev) => [{ id: 'act-' + Date.now(), ...newActivity }, ...prev]);
 
     setSimulating(false);
     showToast('Simulated incoming referral click! (+1 Click recorded)');
@@ -332,6 +326,8 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
   // Simulation: Test Conversion
   const handleSimulateConversion = async () => {
     if (!profile) return;
+    if (userProfile) { showToast('Simulation is available only in guest demo mode.'); return; }
+    if (!firms.length) return;
     setSimulating(true);
 
     const randomFirm = firms[Math.floor(Math.random() * firms.length)];
@@ -342,7 +338,7 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
       size: 100000,
     };
 
-    const orderAmount = randomPlan.discountedPrice;
+    const orderAmount = randomPlan.discountedPrice ?? 0;
     const commissionEarned = Number(((orderAmount * profile.commissionRate) / 100).toFixed(2));
 
     const newClicks = profile.totalClicks + 1;
@@ -390,20 +386,7 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
       timestamp: new Date().toISOString(),
     };
 
-    if (userProfile) {
-      await recordAffiliateActivityInFirestore(newActivity);
-      await updateAffiliateProfileInFirestore(userProfile.uid, {
-        totalClicks: newClicks,
-        totalConversions: newConversions,
-        conversionRate: newRate,
-        pendingEarnings: newPending,
-        lifetimeEarnings: newLifetime,
-        tier: newTier,
-        commissionRate: newRateTier,
-      });
-    } else {
-      setActivities((prev) => [{ id: 'act-' + Date.now(), ...newActivity }, ...prev]);
-    }
+    setActivities((prev) => [{ id: 'act-' + Date.now(), ...newActivity }, ...prev]);
 
     setSimulating(false);
     showToast(`🎉 Challenge purchase converted! +$${commissionEarned.toFixed(2)} commission logged!`);
@@ -438,9 +421,9 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
       amount: amt,
       method: payoutMethod,
       destination: payoutAddress.trim(),
-      status: 'Processing',
+      status: 'Pending',
       requestedAt: new Date().toISOString(),
-      txHash: payoutMethod.includes('Crypto') ? `0x${Math.random().toString(16).slice(2, 10)}...` : undefined,
+
     };
 
     const newAvailable = Number((profile.availableEarnings - amt).toFixed(2));
@@ -450,25 +433,25 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
       payoutMethod,
       payoutAddress: payoutAddress.trim(),
     };
-    setProfile(updatedProfile);
-
     if (userProfile) {
       try {
-        await requestAffiliatePayoutInFirestore(newPayout);
-        await updateAffiliateProfileInFirestore(userProfile.uid, {
-          availableEarnings: newAvailable,
+        await requestAffiliatePayout(newPayout);
+        await updateAffiliateProfile(userProfile.uid, {
           payoutMethod,
           payoutAddress: payoutAddress.trim(),
         });
       } catch (err: any) {
-        console.error('Payout submit error:', err);
+        setPayoutErrorMsg(err.message || 'Could not submit withdrawal.');
+        setPayoutSubmitting(false);
+        return;
       }
     } else {
       setPayouts((prev) => [{ id: 'pay-' + Date.now(), ...newPayout }, ...prev]);
     }
 
+    setProfile(updatedProfile);
     setPayoutSubmitting(false);
-    setPayoutSuccessMsg('Withdrawal request submitted! Payouts are processed every Monday.');
+    setPayoutSuccessMsg('Withdrawal request saved as pending. Payment processing is handled separately.');
     setTimeout(() => {
       setShowPayoutModal(false);
       setPayoutSuccessMsg('');
@@ -913,7 +896,7 @@ export const AffiliatePortal: React.FC<AffiliatePortalProps> = ({
                 >
                   {selectedFirmObj?.plans.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.label} (${p.size.toLocaleString()} - ${p.discountedPrice})
+                      {p.label} (${(p.size?.toLocaleString() ?? 'Not provided')} - ${p.discountedPrice})
                     </option>
                   ))}
                 </select>

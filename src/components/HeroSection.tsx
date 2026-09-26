@@ -39,7 +39,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenGoogleGrounding 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
         <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#161a29]/90 border border-slate-800 text-xs font-semibold text-slate-300 shadow-sm">
           <ShieldCheck className="w-4 h-4 text-indigo-400" />
-          <span>60+ Verified Top Prop Firms</span>
+          <span>Firms sourced from PropFirmMap</span>
         </div>
 
         <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#161a29]/90 border border-slate-800 text-xs font-semibold text-slate-300 shadow-sm">
@@ -54,7 +54,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenGoogleGrounding 
 
         <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#161a29]/90 border border-slate-800 text-xs font-semibold text-slate-300 shadow-sm">
           <Globe2 className="w-4 h-4 text-emerald-400" />
-          <span>6M+ Monthly Website Views</span>
+          <span>Compare current account plans</span>
         </div>
       </div>
     </section>

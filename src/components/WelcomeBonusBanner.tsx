@@ -1,6 +1,6 @@
 import React from 'react';
 import { Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { UserProfileData } from '../lib/firebase';
+import { UserProfileData } from '../lib/api';
 
 interface WelcomeBonusBannerProps {
   userProfile: UserProfileData | null;
