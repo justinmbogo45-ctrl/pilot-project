@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Star, CheckCircle2, Sparkles } from 'lucide-react';
 import { PropFirm, FirmReview } from '../types';
-import { UserProfileData, addReviewToFirestore } from '../lib/firebase';
+import { UserProfileData, addReview } from '../lib/api';
 
 interface WriteReviewModalProps {
   firm: PropFirm | null;
@@ -22,13 +22,14 @@ export const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
   const [country, setCountry] = useState('United States');
   const [rating, setRating] = useState(5);
   const [accountType, setAccountType] = useState('$100K Combine / Evaluation');
-  const [payoutReceived, setPayoutReceived] = useState(true);
-  const [payoutAmount, setPayoutAmount] = useState('4250');
+  const [payoutReceived, setPayoutReceived] = useState(false);
+  const [payoutAmount, setPayoutAmount] = useState('');
   const [title, setTitle] = useState('');
   const [comment, setComment] = useState('');
-  const [pros, setPros] = useState('Rapid payout processing, zero slippage');
+  const [pros, setPros] = useState('');
   const [cons, setCons] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
@@ -46,6 +47,8 @@ export const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     e.preventDefault();
     if (!author.trim() || !comment.trim() || !title.trim()) return;
 
+    if (!userProfile) { setError('Sign in before submitting a review.'); return; }
+    setError('');
     setIsSubmitting(true);
     const newReview: FirmReview = {
       id: `rev-${Date.now()}`,
@@ -64,10 +67,12 @@ export const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
 
     try {
       if (userProfile?.uid) {
-        await addReviewToFirestore(userProfile.uid, firm.id, newReview);
+        newReview.id = await addReview(userProfile.uid, firm.id, newReview);
       }
     } catch (err) {
-      console.error('Error saving review to Firestore:', err);
+      setError((err as Error).message);
+      setIsSubmitting(false);
+      return;
     }
 
     onSubmitReview(firm.id, newReview);
@@ -85,6 +90,7 @@ export const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-[#131629] border border-purple-500/40 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-slate-100">
+        {error && <p role="alert" className="text-red-300 text-sm">{error}</p>}
         <div className="flex items-center justify-between border-b border-slate-800 pb-3">
           <div>
             <div className="flex items-center gap-2">

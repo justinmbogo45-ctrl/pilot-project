@@ -1,0 +1,3 @@
+export function fixtureFirm(slug='test-firm',id=1) {
+  return {id,slug,name:`Example ${slug}`,url:'https://example.com',logo_url:null,country:null,asset_type:'Futures',established:null,propfirmmap_score:null,safety_grade:null,trustpilot:{rating:null,review_count:null,suspended:false},platforms:[],payout_methods:[],rules:{trading_rules:{news_trading_allowed:null,source_url:null},payout_rules:null},challenges:[{id:id*10,name:'Example plan',account_size:'$50K',account_size_numeric:50000,actual_price:null,price_numeric:null,currency:'USD',profit_split_pct:null,profit_target_pct:null,max_daily_loss_pct:null,max_total_drawdown_pct:null,min_trade_days:null}],offers:[]};
+}

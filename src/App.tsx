@@ -34,12 +34,10 @@ import { PriceAlertsManagementModal } from './components/PriceAlertsManagementMo
 import { PriceAlertToast } from './components/PriceAlertToast';
 import { AffiliatePortal } from './components/AffiliatePortal';
 
-import { PROP_FIRMS } from './data/propFirms';
+import { mapCatalogFirm } from './lib/catalog';
 import { PropFirm, AccountPlan, FilterState, FirmReview, PriceAlert } from './types';
-import { auth, syncUserProfile, UserProfileData, subscribeUserPriceAlerts } from './lib/firebase';
+import { auth, syncUserProfile, UserProfileData, subscribeUserPriceAlerts, updateUserFavorites } from './lib/api';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from './lib/firebase';
 import { Scale, LayoutGrid, Table } from 'lucide-react';
 
 const INITIAL_FILTERS: FilterState = {
@@ -62,11 +60,11 @@ const INITIAL_FILTERS: FilterState = {
 };
 
 export default function App() {
-  const [firms, setFirms] = useState<PropFirm[]>(PROP_FIRMS);
+  const [firms, setFirms] = useState<PropFirm[]>([]);
   const [activeTab, setActiveTab] = useState<'firms' | 'compare' | 'quiz' | 'calculator' | 'discounts' | 'payouts' | 'affiliates'>('firms');
   const [selectedMarket, setSelectedMarket] = useState<'Forex' | 'Futures' | 'Crypto'>('Futures');
   const [activeSubTab, setActiveSubTab] = useState<SubTabType>('Firms');
-  const [activeFilterPill, setActiveFilterPill] = useState<'popular' | 'favorite' | 'new' | 'all'>('popular');
+  const [activeFilterPill, setActiveFilterPill] = useState<'popular' | 'favorite' | 'new' | 'all'>('all');
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table'); // default table view per screenshots
   const [currency, setCurrency] = useState<'USD' | 'EUR' | 'GBP'>('USD');
   const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
@@ -93,21 +91,30 @@ export default function App() {
   const [calculatorFirm, setCalculatorFirm] = useState<PropFirm | null>(null);
   const [calculatorPlan, setCalculatorPlan] = useState<AccountPlan | null>(null);
 
-  // Comparison items (max 4)
-  const [comparedItems, setComparedItems] = useState<{ firm: PropFirm; plan: AccountPlan }[]>(() => {
-    return [
-      { firm: PROP_FIRMS[0], plan: PROP_FIRMS[0].plans[3] }, // FTMO $100K
-      { firm: PROP_FIRMS[1], plan: PROP_FIRMS[1].plans[3] }, // Funding Pips $100K
-    ];
-  });
+  const [catalogLoading, setCatalogLoading] = useState(true);
+  const [catalogError, setCatalogError] = useState('');
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
+  const [actionError, setActionError] = useState('');
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/api/catalog', { signal: controller.signal }).then(async response => {
+      if (!response.ok) throw new Error('Unable to load the firm catalog. Please try again.');
+      const payload = await response.json();
+      setFirms(payload.data.map(mapCatalogFirm));
+      setLastSyncedAt(payload.meta.lastSyncedAt);
+    }).catch(error => { if (!controller.signal.aborted) setCatalogError(error.message); })
+      .finally(() => { if (!controller.signal.aborted) setCatalogLoading(false); });
+    return () => controller.abort();
+  }, []);
+  const [comparedItems, setComparedItems] = useState<{ firm: PropFirm; plan: AccountPlan }[]>([]);
 
   // Saved / Favorite Firms (max 3 per screenshot: "Favorite Firms 0/3")
   const [savedFirmIds, setSavedFirmIds] = useState<string[]>(() => {
     try {
       const stored = localStorage.getItem('pfm_saved_firms');
-      return stored ? JSON.parse(stored) : ['lucid-trading', 'tradeify'];
+      return stored ? JSON.parse(stored) : [];
     } catch {
-      return ['lucid-trading', 'tradeify'];
+      return [];
     }
   });
 
@@ -118,14 +125,16 @@ export default function App() {
         try {
           const profile = await syncUserProfile(currentUser);
           setUserProfile(profile);
-          if (profile.favoriteFirmIds && profile.favoriteFirmIds.length > 0) {
+          if (profile.favoriteFirmIds) {
             setSavedFirmIds(profile.favoriteFirmIds);
           }
         } catch (e) {
-          console.error('Failed to sync user profile:', e);
+          setActionError('Signed in, but your profile could not be loaded. Please sign in again.');
         }
       } else {
         setUserProfile(null);
+        setSavedFirmIds([]);
+        setPriceAlerts([]);
       }
     });
     return () => unsubscribe();
@@ -167,7 +176,7 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
-  // Save favorites to localStorage and Firestore
+  // Save favorites to localStorage and PostgreSQL
   const handleToggleSave = async (firmId: string) => {
     let nextIds: string[];
     if (savedFirmIds.includes(firmId)) {
@@ -183,19 +192,21 @@ export default function App() {
     setSavedFirmIds(nextIds);
     localStorage.setItem('pfm_saved_firms', JSON.stringify(nextIds));
 
-    // Update Firestore if signed in
+    // Update PostgreSQL if signed in
     if (userProfile?.uid) {
       try {
-        const userRef = doc(db, 'users', userProfile.uid);
-        await updateDoc(userRef, { favoriteFirmIds: nextIds });
+        await updateUserFavorites(userProfile.uid, nextIds);
         setUserProfile((prev) => (prev ? { ...prev, favoriteFirmIds: nextIds } : null));
       } catch (err) {
-        console.error('Error syncing favorites to Firestore:', err);
+        setSavedFirmIds(savedFirmIds);
+        localStorage.setItem('pfm_saved_firms', JSON.stringify(savedFirmIds));
+        setActionError('Could not save your favorites. Please try again.');
       }
     }
   };
 
   const handleToggleCompare = (firm: PropFirm, plan: AccountPlan) => {
+    if (!plan) return;
     setComparedItems((prev) => {
       const exists = prev.some((it) => it.firm.id === firm.id);
       if (exists) {
@@ -238,14 +249,10 @@ export default function App() {
       prev.map((f) => {
         if (f.id === firmId) {
           const updatedReviews = [newReview, ...f.reviews];
-          const newAvg = Number(
-            (updatedReviews.reduce((sum, r) => sum + r.rating, 0) / updatedReviews.length).toFixed(1)
-          );
           return {
             ...f,
             reviews: updatedReviews,
-            trustpilotScore: newAvg,
-            trustpilotReviewsCount: f.trustpilotReviewsCount + 1,
+
           };
         }
         return f;
@@ -258,50 +265,7 @@ export default function App() {
   };
 
   // Price Alerts State
-  const [priceAlerts, setPriceAlerts] = useState<PriceAlert[]>(() => {
-    try {
-      const stored = localStorage.getItem('pfm_local_price_alerts');
-      if (stored) return JSON.parse(stored);
-    } catch {}
-    return [
-      {
-        id: 'alert-lucid-100k',
-        userId: 'guest-demo',
-        userEmail: 'trader@propfirmmatch.com',
-        firmId: 'lucid-trading',
-        firmName: 'Lucid Trading',
-        firmLogo: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=120&auto=format&fit=crop&q=80',
-        planId: 'lucid-100k',
-        planName: '$100K Combine Plan',
-        planSize: 100000,
-        currentPrice: 245,
-        targetPrice: 195,
-        alertType: 'price_drop',
-        channel: 'both',
-        notifyOnDiscount: true,
-        active: true,
-        createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-      },
-      {
-        id: 'alert-tradeify-50k',
-        userId: 'guest-demo',
-        userEmail: 'trader@propfirmmatch.com',
-        firmId: 'tradeify',
-        firmName: 'Tradeify',
-        firmLogo: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=120&auto=format&fit=crop&q=80',
-        planId: 'tradeify-50k',
-        planName: '$50K Lightning Plan',
-        planSize: 50000,
-        currentPrice: 165,
-        targetPrice: 125,
-        alertType: 'discount_increase',
-        channel: 'both',
-        notifyOnDiscount: true,
-        active: true,
-        createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
-      }
-    ];
-  });
+  const [priceAlerts, setPriceAlerts] = useState<PriceAlert[]>([]);
 
   const [priceAlertModalOpen, setPriceAlertModalOpen] = useState(false);
   const [priceAlertContext, setPriceAlertContext] = useState<{ firm?: PropFirm; plan?: AccountPlan } | null>(null);
@@ -313,17 +277,15 @@ export default function App() {
     couponCode: string;
   } | null>(null);
 
-  // Sync price alerts in real-time from Firestore when authenticated
+  // Sync price alerts in real-time from PostgreSQL when authenticated
   useEffect(() => {
     if (!userProfile?.uid) return;
     const unsub = subscribeUserPriceAlerts(
       userProfile.uid,
-      (firestoreAlerts) => {
-        if (firestoreAlerts && firestoreAlerts.length > 0) {
-          setPriceAlerts(firestoreAlerts);
-          try {
-            localStorage.setItem('pfm_local_price_alerts', JSON.stringify(firestoreAlerts));
-          } catch {}
+      (storedAlerts) => {
+        if (storedAlerts) {
+          setPriceAlerts(storedAlerts);
+
         }
       },
       (err) => {
@@ -343,9 +305,7 @@ export default function App() {
   const handleAlertCreated = (newAlert: PriceAlert) => {
     setPriceAlerts((prev) => {
       const next = [newAlert, ...prev.filter((a) => a.id !== newAlert.id)];
-      try {
-        localStorage.setItem('pfm_local_price_alerts', JSON.stringify(next));
-      } catch {}
+
       return next;
     });
     // Award 25 loyalty points for setting a price tracking alert
@@ -418,6 +378,10 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#0a0d18] text-slate-100 flex flex-col font-sans selection:bg-purple-600 selection:text-white">
       
+      <div role="status" className="bg-slate-900 px-4 py-2 text-center text-xs text-slate-400">
+        {catalogLoading ? 'Loading firm catalog…' : catalogError || (!firms.length ? 'The first catalog import is not ready yet. Refresh shortly.' : <>Source: <a href="https://propfirmmap.com" target="_blank" rel="noreferrer" className="text-emerald-400 underline">PropFirmMap</a> · {firms.length} firms · Synced {lastSyncedAt ? new Date(lastSyncedAt).toLocaleString() : 'not yet'} · Prices use the source currency.</>)}
+      </div>
+      {actionError && <div role="alert" className="bg-red-950 p-3 text-center text-sm">{actionError}<button className="ml-4 underline" onClick={() => setActionError('')}>Dismiss</button></div>}
       {/* Top Giveaway Announcement Banner */}
       <AnnouncementBanner onOpenGiveaway={() => setGiveawayModalOpen(true)} />
 

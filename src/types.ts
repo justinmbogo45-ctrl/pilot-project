@@ -16,44 +16,46 @@ export type TradingPlatform =
   | 'MetaTrader 5';
 
 export interface AccountPlan {
+  currency?: string | null;
+  sourcePlan?: Record<string, any>;
   id: string;
-  size: number; // e.g. 10000, 25000, 50000, 100000, 200000
+  size: number | null; // e.g. 10000, 25000, 50000, 100000, 200000
   label: string; // "$100K"
-  originalPrice: number;
-  discountedPrice: number;
+  originalPrice: number | null;
+  discountedPrice: number | null;
   promoCode?: string;
-  step1TargetPercent: number; // e.g. 8 for 8% (0 for instant)
-  step2TargetPercent?: number; // e.g. 5 for 5%
-  step3TargetPercent?: number;
-  maxDrawdownPercent: number; // e.g. 10 for 10%
-  dailyDrawdownPercent: number; // e.g. 5 for 5%
-  maxDrawdownAmount: number;
-  dailyDrawdownAmount: number;
-  minTradingDays: number; // e.g. 0 or 3
-  profitSplit: number; // e.g. 85 for 85%
+  step1TargetPercent: number | null; // e.g. 8 for 8% (0 for instant)
+  step2TargetPercent?: number | null; // e.g. 5 for 5%
+  step3TargetPercent?: number | null;
+  maxDrawdownPercent: number | null; // e.g. 10 for 10%
+  dailyDrawdownPercent: number | null; // e.g. 5 for 5%
+  maxDrawdownAmount: number | null;
+  dailyDrawdownAmount: number | null;
+  minTradingDays: number | null; // e.g. 0 or 3
+  profitSplit: number | null; // e.g. 85 for 85%
   leverage: string; // e.g. "1:100"
-  refundable: boolean;
-  firstPayoutDays: number; // e.g. 14, 7, 0 (on demand)
-  subsequentPayoutDays: number; // e.g. 14, 7
+  refundable: boolean | null;
+  firstPayoutDays: number | null; // e.g. 14, 7, 0 (on demand)
+  subsequentPayoutDays: number | null; // e.g. 14, 7
 }
 
 export interface FirmRules {
-  weekendHolding: boolean;
-  newsTrading: boolean;
-  eaAlgoTrading: boolean;
-  copyTrading: boolean;
-  hedgingAllowed: boolean;
-  martingaleAllowed: boolean;
-  overnightHolding: boolean;
-  drawdownCalculation: 'Balance' | 'Equity' | 'Relative Trailing' | 'Higher Balance Peak';
-  consistencyRule: boolean;
+  weekendHolding: boolean | null;
+  newsTrading: boolean | null;
+  eaAlgoTrading: boolean | null;
+  copyTrading: boolean | null;
+  hedgingAllowed: boolean | null;
+  martingaleAllowed: boolean | null;
+  overnightHolding: boolean | null;
+  drawdownCalculation: 'Balance' | 'Equity' | 'Relative Trailing' | 'Higher Balance Peak' | null;
+  consistencyRule: boolean | null;
   consistencyRuleDetails?: string;
-  inactivityLimitDays: number;
+  inactivityLimitDays: number | null;
   prohibitedStrategies: string[];
   scalingPlan: {
-    available: boolean;
-    scalingTargetPercent: number;
-    accountGrowthPercent: number;
+    available: boolean | null;
+    scalingTargetPercent: number | null;
+    accountGrowthPercent: number | null;
     maxCapital: string;
   };
 }
@@ -75,41 +77,42 @@ export interface FirmReview {
 }
 
 export interface PropFirm {
+  sourceData?: Record<string, any>;
   id: string;
   name: string;
   slug: string;
   logo: string;
   accentColor: string;
   website: string;
-  establishedYear: number;
+  establishedYear: number | null;
   headquarters: string;
   brokerOrLiquidity: string;
-  trustpilotScore: number;
-  trustpilotReviewsCount: number;
-  matchScore?: number; // Calculated dynamic match score
-  verifiedPayoutsCount: number;
+  trustpilotScore: number | null;
+  trustpilotReviewsCount: number | null;
+  matchScore?: number | null; // Calculated dynamic match score
+  verifiedPayoutsCount: number | null;
   totalPayoutsTracked: string; // e.g. "$18.4M+"
   featuredBadge?: string; // e.g. "Top Rated", "Editor's Choice", "Best Futures", "Fastest Payouts"
-  rankPosition?: number;
-  popularityLikes?: number;
-  hasGoldBadge?: boolean;
+  rankPosition?: number | null;
+  popularityLikes?: number | null;
+  hasGoldBadge?: boolean | null;
   countryFlag?: string;
-  yearsInOperation?: number;
+  yearsInOperation?: number | null;
   assetTags?: string[];
   maxAllocation?: string;
-  usTradersAccepted: boolean;
+  usTradersAccepted: boolean | null;
   supportedMarkets: MarketType[];
   availableTypes: ChallengeType[];
   availablePlatforms: TradingPlatform[];
-  drawdownType: DrawdownType;
-  baseProfitSplit: number; // e.g. 80
-  maxProfitSplit: number; // e.g. 95
+  drawdownType: DrawdownType | null;
+  baseProfitSplit: number | null; // e.g. 80
+  maxProfitSplit: number | null; // e.g. 95
   plans: AccountPlan[];
   rules: FirmRules;
   payoutMethods: string[];
   exclusiveDiscount?: {
     code: string;
-    discountPercent: number;
+    discountPercent: number | null;
     perkDescription: string;
     validUntil: string;
   };
@@ -185,7 +188,8 @@ export interface PriceAlert {
   firmLogo?: string;
   planId: string;
   planName: string;
-  planSize: number;
+  planSize: number | null;
+  currency?: string | null;
   currentPrice: number;
   targetPrice?: number;
   alertType: AlertType;
@@ -245,4 +249,3 @@ export interface AffiliatePayout {
   requestedAt: string;
   txHash?: string;
 }
-

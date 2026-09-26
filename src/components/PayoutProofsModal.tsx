@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ShieldCheck, CheckCircle2, Search, Filter, ExternalLink, DollarSign, Calendar } from 'lucide-react';
-import { RECENT_PAYOUT_PROOFS } from '../data/payoutProofs';
+const RECENT_PAYOUT_PROOFS: import('../types').PayoutProof[] = [];
 import { PayoutProof } from '../types';
 
 interface PayoutProofsModalProps {
@@ -25,17 +25,18 @@ export const PayoutProofsModal: React.FC<PayoutProofsModalProps> = ({ currency }
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       
+      <p className="text-center text-sm text-slate-400 mb-4">The connected API provides payout rules and methods, but no individual payout proofs.</p>
       {/* Header */}
       <div className="text-center space-y-2 mb-8">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-wider">
           <ShieldCheck className="w-3.5 h-3.5" />
-          Verified Community Payout Tracker
+          Community Payout Tracker
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
           Live Payout Proofs & Withdrawal Ledger
         </h1>
         <p className="text-slate-400 text-xs sm:text-sm max-w-xl mx-auto">
-          Track verified withdrawals confirmed across partner prop firms. Verified through Rise receipts, USDT transaction hashes, and bank confirmations.
+          Individual payout proofs are not supplied by the connected API. See each firm’s details for its published payout rules and methods.
         </p>
       </div>
 

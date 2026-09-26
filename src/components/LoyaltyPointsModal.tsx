@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Sparkles, Check, Gift, ArrowRight, Clock, Star, Trophy } from 'lucide-react';
-import { UserProfileData, claimDailyBonus } from '../lib/firebase';
+import { UserProfileData, claimDailyBonus } from '../lib/api';
 
 interface LoyaltyPointsModalProps {
   isOpen: boolean;
@@ -47,13 +47,13 @@ export const LoyaltyPointsModal: React.FC<LoyaltyPointsModalProps> = ({
         setClaimMsg('You already claimed your daily bonus today! Check back tomorrow.');
       }
     } catch (e) {
-      console.error(e);
+      setClaimMsg((e as Error).message || 'Could not save your daily bonus.');
     } finally {
       setClaiming(false);
     }
   };
 
-  const points = userProfile?.loyaltyPoints || 200;
+  const points = userProfile?.loyaltyPoints ?? 200;
 
   return (
     <div 

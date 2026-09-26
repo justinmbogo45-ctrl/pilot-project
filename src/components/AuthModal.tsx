@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
-import { loginWithGoogle, auth, db } from '../lib/firebase';
+import { loginWithGoogle, auth } from '../lib/api';
 import { signInAnonymously } from 'firebase/auth';
 
 interface AuthModalProps {

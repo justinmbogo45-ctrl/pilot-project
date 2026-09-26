@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Sparkles, Gift, CheckCircle2, ShieldCheck, Trophy } from 'lucide-react';
-import { enterGiveawayInFirestore, UserProfileData } from '../lib/firebase';
+import { enterGiveaway, UserProfileData } from '../lib/api';
 
 interface GiveawayModalProps {
   isOpen: boolean;
@@ -18,6 +18,7 @@ export const GiveawayModal: React.FC<GiveawayModalProps> = ({
   onEnteredGiveaway,
 }) => {
   const [email, setEmail] = useState('');
+  const [entryError, setEntryError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasEntered, setHasEntered] = useState(false);
 
@@ -45,11 +46,11 @@ export const GiveawayModal: React.FC<GiveawayModalProps> = ({
     const entryEmail = email.trim() || userProfile.email || 'trader@propfirmmatch.com';
     setIsSubmitting(true);
     try {
-      await enterGiveawayInFirestore(userProfile.uid, entryEmail, giveawayId);
+      await enterGiveaway(userProfile.uid, entryEmail, giveawayId);
       setHasEntered(true);
       onEnteredGiveaway(25);
     } catch (err) {
-      console.error(err);
+      setEntryError((err as Error).message || 'Could not save your entry.');
     } finally {
       setIsSubmitting(false);
     }
@@ -87,6 +88,7 @@ export const GiveawayModal: React.FC<GiveawayModalProps> = ({
           </p>
         </div>
 
+        {entryError && <p role="alert" className="text-red-300 text-sm">{entryError}</p>}
         {/* Prize cards */}
         <div className="grid grid-cols-2 gap-3 mb-6">
           <div className="bg-[#1c1836] border border-purple-800/50 rounded-xl p-3 text-center">
