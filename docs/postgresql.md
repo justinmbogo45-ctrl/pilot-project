@@ -50,7 +50,14 @@ Schema: `db/migrations/001_postgres.sql`. Indexes cover catalog filtering and us
 - Fetches and validates the complete catalog before publishing. All upserts, inactive flags and the success record commit in one transaction. API or database failures leave the previous catalog usable and record a failed run.
 - Nulls stay null. Raw source statements and notes are retained; source currency is displayed without invented exchange rates or automatically applying a deal to every plan.
 - Expired offers are excluded when the catalog is read, even between syncs.
-- The server checks hourly for an import due (default 24 hours since the last successful run), including on startup. Set `CATALOG_SYNC_ENABLED=false` to use an external scheduler calling `bun run db:sync`. Automatic scheduling requires a running server; failures retry at the next hourly check.
+- The server checks hourly for an import due (default 8 hours since the last successful run, about three imports per day), including on startup. Automatic scheduling requires a running server; failures retry at the next hourly check.
+- `bun run db:sync` runs one import and exits with a nonzero status on failure. For an external cron scheduler, set `CATALOG_SYNC_ENABLED=false` and run it at 00:00, 08:00, and 16:00 in the server's timezone:
+
+  ```cron
+  0 0,8,16 * * * cd /path/to/pilot-project && /path/to/bun run db:sync >> /path/to/catalog-sync.log 2>&1
+  ```
+
+  Cron needs the same `DATABASE_URL` as the app. The importer takes a database lock, so overlapping runs cannot publish concurrently.
 
 Inspect import status:
 

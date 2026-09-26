@@ -40,7 +40,7 @@ const FAQ_ITEMS: FAQItem[] = [
 ];
 
 export const HomepageFAQ: React.FC = () => {
-  const [openIndexes, setOpenIndexes] = useState<number[]>([0, 1]); // first two expanded by default per screenshot
+  const [openIndexes, setOpenIndexes] = useState<number[]>([0, 1]);
 
   const toggleAccordion = (index: number) => {
     setOpenIndexes((prev) =>
@@ -49,9 +49,9 @@ export const HomepageFAQ: React.FC = () => {
   };
 
   return (
-    <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pb-12">
-      <h2 className="text-2xl sm:text-3xl font-extrabold text-white text-center mb-8 tracking-tight">
-        Homepage FAQ (Futures)
+    <section className="mx-auto max-w-[800px] px-4 sm:px-6 lg:px-8 mt-20 pb-12">
+      <h2 className="text-2xl sm:text-3xl font-bold text-[#f1f3f2] text-center mb-10 tracking-tight">
+        Frequently Asked Questions
       </h2>
 
       <div className="space-y-3">
@@ -60,22 +60,22 @@ export const HomepageFAQ: React.FC = () => {
           return (
             <div
               key={index}
-              className="bg-[#121526] border border-slate-800 rounded-xl overflow-hidden transition-all shadow-md"
+              className="rounded-xl border border-[#2b2e2c] bg-[#1d1f1e] overflow-hidden transition-colors duration-200"
             >
               <button
                 onClick={() => toggleAccordion(index)}
-                className="w-full text-left py-4 px-5 flex items-center justify-between gap-4 font-bold text-white hover:text-purple-300 transition-colors cursor-pointer"
+                className="w-full text-left py-4 px-5 flex items-center justify-between gap-4 font-medium text-[#f1f3f2] hover:text-[#3ecf8e] transition-colors duration-150 cursor-pointer"
               >
                 <span className="text-sm sm:text-base">{item.question}</span>
                 <ChevronDown
-                  className={`w-5 h-5 text-slate-400 transition-transform duration-200 flex-shrink-0 ${
-                    isOpen ? 'rotate-180 text-purple-400' : ''
+                  className={`h-5 w-5 text-[#747976] transition-transform duration-200 flex-shrink-0 ${
+                    isOpen ? 'rotate-180 text-[#3ecf8e]' : ''
                   }`}
                 />
               </button>
 
               {isOpen && (
-                <div className="px-5 pb-5 pt-1 text-slate-300 text-xs sm:text-sm leading-relaxed border-t border-slate-800/60">
+                <div className="px-5 pb-5 pt-1 text-sm leading-relaxed text-[#9a9e9b] border-t border-[#2b2e2c]">
                   {item.answer}
                 </div>
               )}

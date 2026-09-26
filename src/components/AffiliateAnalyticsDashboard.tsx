@@ -209,10 +209,10 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-[#101426] border border-purple-500/40 rounded-xl p-3 shadow-2xl text-xs space-y-1.5 backdrop-blur-md">
-          <div className="font-extrabold text-white pb-1 border-b border-slate-800 flex items-center justify-between gap-4">
+        <div className="bg-[#0f0f0f] border border-emerald-500/40 rounded-xl p-3 text-xs space-y-1.5 backdrop-blur-md">
+          <div className="font-bold text-[#f1f3f2] pb-1 border-b border-[#2b2e2c] flex items-center justify-between gap-4">
             <span>{label}</span>
-            <span className="text-[10px] text-purple-300 font-mono">Monthly Audit</span>
+            <span className="text-[10px] text-[#3ecf8e] font-mono">Monthly Audit</span>
           </div>
           {payload.map((entry: any, index: number) => {
             const isCurrency = entry.name.toLowerCase().includes('earnings') || entry.name.toLowerCase().includes('revenue');
@@ -226,9 +226,9 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
               <div key={`item-${index}`} className="flex items-center justify-between gap-4 text-[11px]">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
-                  <span className="text-slate-300 font-medium">{entry.name}:</span>
+                  <span className="text-[#9a9e9b] font-medium">{entry.name}:</span>
                 </div>
-                <span className="font-bold text-white font-mono">{formattedValue}</span>
+                <span className="font-bold text-[#f1f3f2] font-mono">{formattedValue}</span>
               </div>
             );
           })}
@@ -242,20 +242,20 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
     <div className="space-y-6 mb-8">
       
       {/* Dashboard Top Header & Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#12162a] border border-slate-800 shadow-xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-[#1d1f1e] border border-[#2b2e2c]">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-purple-950/80 border border-purple-500/40 text-purple-300">
-              <BarChart3 className="w-5 h-5 text-purple-400" />
+            <div className="p-2 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-[#3ecf8e]">
+              <BarChart3 className="w-5 h-5 text-[#3ecf8e]" />
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-black text-[#f1f3f2] tracking-tight flex items-center gap-2">
                 <span>Affiliate Growth & Performance Analytics</span>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-[10px] font-extrabold text-emerald-300">
+                <span className="px-2 py-0.5 rounded-full bg-[#3ecf8e]/20 border border-emerald-500/40 text-[10px] font-bold text-[#3ecf8e]">
                   Live Attribution
                 </span>
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#747976]">
                 Track referral traffic growth, funded combine conversion rates, and CTR dynamics across all custom links.
               </p>
             </div>
@@ -266,15 +266,15 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
         <div className="flex flex-wrap items-center gap-2">
           
           {/* Timeframe selector */}
-          <div className="flex items-center bg-[#0d1020] border border-slate-700/80 rounded-xl p-1 text-xs font-bold text-slate-400">
+          <div className="flex items-center bg-[#1a1c1b] border border-[#333633]/80 rounded-xl p-1 text-xs font-bold text-[#747976]">
             {(['3M', '6M', '1Y'] as Timeframe[]).map((tf) => (
               <button
                 key={tf}
                 onClick={() => setTimeframe(tf)}
                 className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   timeframe === tf
-                    ? 'bg-purple-600 text-white shadow-sm'
-                    : 'hover:text-slate-200'
+                    ? 'bg-emerald-600 text-[#f1f3f2] shadow-sm'
+                    : 'hover:text-[#9a9e9b]'
                 }`}
               >
                 {tf}
@@ -283,13 +283,13 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
           </div>
 
           {/* View Toggles */}
-          <div className="flex items-center bg-[#0d1020] border border-slate-700/80 rounded-xl p-1 text-xs font-semibold text-slate-400">
+          <div className="flex items-center bg-[#1a1c1b] border border-[#333633]/80 rounded-xl p-1 text-xs font-semibold text-[#747976]">
             <button
               onClick={() => setChartView('overview')}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 chartView === 'overview'
-                  ? 'bg-slate-800 text-white shadow-sm'
-                  : 'hover:text-slate-200'
+                  ? 'bg-[#222522] text-[#f1f3f2] shadow-sm'
+                  : 'hover:text-[#9a9e9b]'
               }`}
             >
               Overview
@@ -298,8 +298,8 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
               onClick={() => setChartView('growth')}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 chartView === 'growth'
-                  ? 'bg-slate-800 text-white shadow-sm'
-                  : 'hover:text-slate-200'
+                  ? 'bg-[#222522] text-[#f1f3f2] shadow-sm'
+                  : 'hover:text-[#9a9e9b]'
               }`}
             >
               Traffic Growth
@@ -308,8 +308,8 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
               onClick={() => setChartView('conversions')}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 chartView === 'conversions'
-                  ? 'bg-slate-800 text-white shadow-sm'
-                  : 'hover:text-slate-200'
+                  ? 'bg-[#222522] text-[#f1f3f2] shadow-sm'
+                  : 'hover:text-[#9a9e9b]'
               }`}
             >
               Conversions
@@ -318,8 +318,8 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
               onClick={() => setChartView('links')}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 chartView === 'links'
-                  ? 'bg-slate-800 text-white shadow-sm'
-                  : 'hover:text-slate-200'
+                  ? 'bg-[#222522] text-[#f1f3f2] shadow-sm'
+                  : 'hover:text-[#9a9e9b]'
               }`}
             >
               Custom Links CTR
@@ -332,54 +332,54 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
       {/* 4 Mini KPI Analytical Highlights */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
         
-        <div className="p-4 rounded-xl bg-[#12162a] border border-slate-800/80 shadow-md">
-          <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+        <div className="p-4 rounded-xl bg-[#1d1f1e] border border-[#2b2e2c]/80">
+          <div className="flex items-center justify-between text-[#747976] text-xs mb-1">
             <span>Monthly Traffic Growth</span>
-            <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+            <TrendingUp className="w-3.5 h-3.5 text-[#3ecf8e]" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-white">
+          <div className="text-xl sm:text-2xl font-black text-[#f1f3f2]">
             {kpiStats.clicksGrowth}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">
+          <div className="text-[11px] text-[#747976] mt-0.5">
             {kpiStats.totalClicksCount} clicks recorded
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-[#12162a] border border-slate-800/80 shadow-md">
-          <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+        <div className="p-4 rounded-xl bg-[#1d1f1e] border border-[#2b2e2c]/80">
+          <div className="flex items-center justify-between text-[#747976] text-xs mb-1">
             <span>Avg. Custom Link CTR</span>
             <MousePointerClick className="w-3.5 h-3.5 text-amber-400" />
           </div>
           <div className="text-xl sm:text-2xl font-black text-amber-300">
             {kpiStats.avgCtr}
           </div>
-          <div className="text-[11px] text-emerald-400 mt-0.5 font-medium">
+          <div className="text-[11px] text-[#3ecf8e] mt-0.5 font-medium">
             +1.8% above industry average
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-[#12162a] border border-slate-800/80 shadow-md">
-          <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+        <div className="p-4 rounded-xl bg-[#1d1f1e] border border-[#2b2e2c]/80">
+          <div className="flex items-center justify-between text-[#747976] text-xs mb-1">
             <span>Challenge Conv. Rate</span>
-            <Target className="w-3.5 h-3.5 text-pink-400" />
+            <Target className="w-3.5 h-3.5 text-[#3ecf8e]" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-pink-300">
+          <div className="text-xl sm:text-2xl font-black text-[#3ecf8e]">
             {kpiStats.avgConvRate}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">
+          <div className="text-[11px] text-[#747976] mt-0.5">
             {kpiStats.totalConversionsCount} paid challenge buyers
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-[#12162a] border border-slate-800/80 shadow-md">
-          <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+        <div className="p-4 rounded-xl bg-[#1d1f1e] border border-[#2b2e2c]/80">
+          <div className="flex items-center justify-between text-[#747976] text-xs mb-1">
             <span>Projected Monthly Revenue</span>
-            <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
+            <DollarSign className="w-3.5 h-3.5 text-[#3ecf8e]" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-emerald-400">
+          <div className="text-xl sm:text-2xl font-black text-[#3ecf8e]">
             {kpiStats.monthlyRunRate}
           </div>
-          <div className="text-[11px] text-purple-300 mt-0.5 font-medium">
+          <div className="text-[11px] text-[#3ecf8e] mt-0.5 font-medium">
             Based on current {profile?.commissionRate || 15}% tier
           </div>
         </div>
@@ -387,18 +387,18 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
       </div>
 
       {/* Main Charts Canvas Container */}
-      <div className="p-6 rounded-2xl bg-[#12162a] border border-slate-800 shadow-xl space-y-4">
+      <div className="p-6 rounded-2xl bg-[#1d1f1e] border border-[#2b2e2c] space-y-4">
         
         {/* Dynamic Header based on active view */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#2b2e2c]/80">
           <div>
-            <h3 className="font-extrabold text-white text-base flex items-center gap-2">
+            <h3 className="font-bold text-[#f1f3f2] text-base flex items-center gap-2">
               {chartView === 'overview' && 'Referral Volume & RevShare Trend'}
               {chartView === 'growth' && 'Monthly Referral Link Traffic & Signup Velocity'}
               {chartView === 'conversions' && 'Funded Account Challenge Sales vs Commission Payouts'}
               {chartView === 'links' && 'Click-Through Rate (CTR) & Conversion Rate by Custom Link'}
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[#747976]">
               {chartView === 'overview' && 'Aggregated view comparing monthly trader link clicks with resulting challenge purchase revenue.'}
               {chartView === 'growth' && 'Trajectory of monthly clicks, registered signups, and community engagement over time.'}
               {chartView === 'conversions' && 'Conversion volume breakdown and corresponding RevShare commissions cleared into your wallet.'}
@@ -406,7 +406,7 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
             </p>
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
+          <div className="flex items-center gap-2 text-xs text-[#747976] font-mono">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
             <span>Monthly Horizon ({timeframe})</span>
           </div>
@@ -502,25 +502,25 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
       </div>
 
       {/* Custom Link CTR & Performance Detailed Table */}
-      <div className="p-6 rounded-2xl bg-[#12162a] border border-slate-800 shadow-xl space-y-4">
+      <div className="p-6 rounded-2xl bg-[#1d1f1e] border border-[#2b2e2c] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="font-extrabold text-white text-base flex items-center gap-2">
-              <LinkIcon className="w-4 h-4 text-purple-400" />
+            <h3 className="font-bold text-[#f1f3f2] text-base flex items-center gap-2">
+              <LinkIcon className="w-4 h-4 text-[#3ecf8e]" />
               <span>Custom Referral Links CTR & Conversion Breakdown</span>
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[#747976]">
               Detailed audit of impressions, clicks, click-through rates, and attributed commissions by promotional link.
             </p>
           </div>
 
           {/* Filter Link Types */}
           <div className="flex items-center gap-2">
-            <Filter className="w-3.5 h-3.5 text-slate-400" />
+            <Filter className="w-3.5 h-3.5 text-[#747976]" />
             <select
               value={selectedLinkFilter}
               onChange={(e) => setSelectedLinkFilter(e.target.value)}
-              className="bg-[#0d1020] border border-slate-700 text-xs rounded-xl px-3 py-1.5 text-slate-200 focus:outline-none focus:border-purple-500 font-medium"
+              className="bg-[#1a1c1b] border border-[#333633] text-xs rounded-xl px-3 py-1.5 text-[#9a9e9b] focus:outline-none focus:border-emerald-500 font-medium"
             >
               <option value="all">All Promotional Links ({customLinksData.length})</option>
               <option value="vanity">Vanity URLs</option>
@@ -532,58 +532,58 @@ export const AffiliateAnalyticsDashboard: React.FC<AffiliateAnalyticsDashboardPr
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#0e1122] text-slate-400 border-b border-slate-800">
+            <thead className="bg-[#1a1c1b] text-[#747976] border-b border-[#2b2e2c]">
               <tr>
                 <th className="py-2.5 px-4 font-bold">Custom Promotional Asset</th>
                 <th className="py-2.5 px-4 font-bold">Asset Type</th>
                 <th className="py-2.5 px-4 font-bold font-mono">Impressions</th>
                 <th className="py-2.5 px-4 font-bold font-mono">Clicks</th>
                 <th className="py-2.5 px-4 font-bold font-mono text-amber-400">CTR %</th>
-                <th className="py-2.5 px-4 font-bold font-mono text-pink-400">Sales</th>
+                <th className="py-2.5 px-4 font-bold font-mono text-[#3ecf8e]">Sales</th>
                 <th className="py-2.5 px-4 font-bold font-mono">Conv. Rate</th>
-                <th className="py-2.5 px-4 font-bold font-mono text-emerald-400">Earned RevShare</th>
+                <th className="py-2.5 px-4 font-bold font-mono text-[#3ecf8e]">Earned RevShare</th>
                 <th className="py-2.5 px-4 text-right font-bold">Trend</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 text-slate-300">
+            <tbody className="divide-y divide-slate-800/60 text-[#9a9e9b]">
               {filteredLinks.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-800/30 transition-colors">
+                <tr key={item.id} className="hover:bg-[#222522]/30 transition-colors duration-150">
                   <td className="py-3 px-4">
                     <div>
-                      <div className="font-bold text-white flex items-center gap-1.5">
+                      <div className="font-bold text-[#f1f3f2] flex items-center gap-1.5">
                         <span>{item.name}</span>
                         {item.type === 'deeplink' && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold">Targeted</span>
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#3ecf8e]/20 text-[#3ecf8e] font-bold">Targeted</span>
                         )}
                       </div>
-                      <div className="text-[10px] text-slate-400 font-mono mt-0.5 truncate max-w-xs sm:max-w-sm">
+                      <div className="text-[10px] text-[#747976] font-mono mt-0.5 truncate max-w-xs sm:max-w-sm">
                         {item.url}
                       </div>
                     </div>
                   </td>
                   <td className="py-3 px-4">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-800 text-slate-300 border border-slate-700/60">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-[#222522] text-[#9a9e9b] border border-[#333633]/60">
                       {item.type}
                     </span>
                   </td>
                   <td className="py-3 px-4 font-mono">{item.impressions.toLocaleString()}</td>
-                  <td className="py-3 px-4 font-mono font-bold text-purple-300">{item.clicks}</td>
+                  <td className="py-3 px-4 font-mono font-bold text-[#3ecf8e]">{item.clicks}</td>
                   <td className="py-3 px-4 font-mono font-black text-amber-400">
                     <div className="flex items-center gap-1">
                       <span>{item.ctr}%</span>
                     </div>
                   </td>
-                  <td className="py-3 px-4 font-mono font-bold text-pink-300">{item.conversions}</td>
+                  <td className="py-3 px-4 font-mono font-bold text-[#3ecf8e]">{item.conversions}</td>
                   <td className="py-3 px-4 font-mono">
-                    <span className="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800 text-slate-200 font-bold text-[10px]">
+                    <span className="px-2 py-0.5 rounded-full bg-[#1d1f1e] border border-[#2b2e2c] text-[#9a9e9b] font-bold text-[10px]">
                       {item.convRate}%
                     </span>
                   </td>
-                  <td className="py-3 px-4 font-mono font-black text-emerald-400">
+                  <td className="py-3 px-4 font-mono font-black text-[#3ecf8e]">
                     ${item.earnings.toFixed(2)}
                   </td>
                   <td className="py-3 px-4 text-right">
-                    <span className="text-[11px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                    <span className="text-[11px] font-bold text-[#3ecf8e] bg-[#3ecf8e]/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
                       {item.trend}
                     </span>
                   </td>

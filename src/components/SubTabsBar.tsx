@@ -12,17 +12,17 @@ export const SubTabsBar: React.FC<SubTabsBarProps> = ({ activeSubTab, setActiveS
 
   return (
     <div className="flex justify-center mt-8 px-4">
-      <div className="inline-flex p-1 rounded-full bg-[#121422] border border-slate-800 shadow-inner">
+      <div className="inline-flex rounded-lg border border-[#2b2e2c] bg-[#1d1f1e] p-1">
         {tabs.map((tab) => {
           const isActive = activeSubTab === tab;
           return (
             <button
               key={tab}
               onClick={() => setActiveSubTab(tab)}
-              className={`px-5 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${
+              className={`rounded-md px-5 sm:px-6 py-2 text-xs sm:text-sm font-medium transition-colors duration-150 ${
                 isActive
-                  ? 'bg-white text-slate-950 shadow-md'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                  ? 'bg-[#f1f3f2] text-[#171918] font-semibold'
+                  : 'text-[#9a9e9b] hover:text-[#f1f3f2] hover:bg-[#222522]'
               }`}
             >
               {tab}

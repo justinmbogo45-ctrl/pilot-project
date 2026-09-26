@@ -11,7 +11,7 @@
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
     "db:migrate": "tsx scripts/database.ts",
-    "db:sync": "tsx scripts/database.ts --sync",
+    "db:sync": "tsx scripts/sync-catalog.ts",
     "test": "tsx --test tests/*.test.ts",
     "check:catalog": "tsx scripts/check-catalog.tsx"
   },
