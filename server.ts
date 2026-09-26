@@ -271,7 +271,7 @@ async function startServer() {
   await migrate();
   app.use('/api', createDataRouter());
   if (process.env.CATALOG_SYNC_ENABLED !== 'false') {
-    const hours = Number(process.env.CATALOG_SYNC_INTERVAL_HOURS || 24);
+    const hours = Number(process.env.CATALOG_SYNC_INTERVAL_HOURS || 8);
     if (!Number.isFinite(hours) || hours < 1 || hours > 168) throw new Error('CATALOG_SYNC_INTERVAL_HOURS must be between 1 and 168');
     const refresh = async () => {
       try {

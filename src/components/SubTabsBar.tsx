@@ -11,18 +11,18 @@ export const SubTabsBar: React.FC<SubTabsBarProps> = ({ activeSubTab, setActiveS
   const tabs: SubTabType[] = ['Firms', 'Challenges', 'Offers', 'Reviews'];
 
   return (
-    <div className="flex justify-center mt-8 px-4">
-      <div className="inline-flex p-1 rounded-full bg-[#121422] border border-slate-800 shadow-inner">
+    <div className="mx-auto mt-9 max-w-[1240px] overflow-x-auto px-6 sm:px-8">
+      <div className="inline-flex min-w-max items-center gap-7 border-b border-[#2b2e2c]">
         {tabs.map((tab) => {
           const isActive = activeSubTab === tab;
           return (
             <button
               key={tab}
               onClick={() => setActiveSubTab(tab)}
-              className={`px-5 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${
+              className={`border-b-2 px-0.5 pb-3 pt-1 text-sm font-medium transition-colors duration-150 ${
                 isActive
-                  ? 'bg-white text-slate-950 shadow-md'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                  ? 'border-[#3ecf8e] text-[#f1f3f2]'
+                  : 'border-transparent text-[#9a9e9b] hover:text-[#f1f3f2]'
               }`}
             >
               {tab}

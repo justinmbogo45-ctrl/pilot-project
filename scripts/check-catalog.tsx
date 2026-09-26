@@ -26,5 +26,5 @@ renderToStaticMarkup(<FeeCalculator firms={[]} currency="USD"/>);
 renderToStaticMarkup(<DiscountsHub firms={firms} onSelectFirm={noop}/>);
 renderToStaticMarkup(<FirmMatchQuiz firms={firms} currency="USD" onSelectFirm={noop}/>);
 renderToStaticMarkup(<ComparisonMatrixModal items={firms.filter(f=>f.plans.length).slice(0,4).map(f=>({firm:f,plan:f.plans[0]}))} currency="USD" onRemoveItem={noop} onChangePlan={noop} onClearAll={noop} onClose={noop}/>);
-renderToStaticMarkup(<FirmTableView preferredSize="All" firms={firms} currency="USD" savedFirmIds={[]} onToggleSave={noop} onOpenDetails={noop} onOpenFilterDrawer={noop} onOpenMethodologyModal={noop} activeFilterPill="all" setActiveFilterPill={noop}/>);
+renderToStaticMarkup(<FirmTableView preferredSize="All" firms={firms} currency="USD" savedFirmIds={[]} comparedFirmIds={[]} onToggleCompare={noop} onToggleSave={noop} onOpenDetails={noop} onOpenFilterDrawer={noop} onOpenMethodologyModal={noop} activeFilterPill="all" setActiveFilterPill={noop}/>);
 console.log(`Rendered ${firms.length} imported firm cards/details plus catalog, comparison, discounts, quiz and calculator views without invalid numbers.`);

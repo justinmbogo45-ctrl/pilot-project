@@ -1,5 +1,5 @@
 {
-  "name": "PropFirm Match",
+  "name": "Signal Props",
   "description": "Compare, filter, and discover top proprietary trading firms with comprehensive challenge rules, live discounts, fee calculators, side-by-side comparison, and a match quiz.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

@@ -146,11 +146,11 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md overflow-y-auto"
     >
       <div 
-        className="bg-[#0e1322] border border-blue-500/40 rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl shadow-blue-950/50 overflow-hidden"
+        className="bg-[#0e1322] border border-blue-500/40 rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-800 bg-gradient-to-r from-slate-900 via-[#101935] to-slate-900 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-[#2b2e2c] bg-gradient-to-r from-slate-900 via-[#101935] to-slate-900 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Google Search Icon badge */}
             <div className="w-10 h-10 rounded-xl bg-[#1a233d] border border-blue-500/40 flex items-center justify-center shadow-inner">
@@ -163,12 +163,12 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-base sm:text-lg font-black text-white">Google Search Grounded Intelligence</h2>
+                <h2 className="text-base sm:text-lg font-black text-[#f1f3f2]">Google Search Grounded Intelligence</h2>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/20 text-blue-400 border border-blue-500/40">
                   gemini-3.5-flash
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#747976]">
                 Live web search data, 2026 coupon codes, payout verification & community sentiment
               </p>
             </div>
@@ -176,14 +176,14 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+            className="p-2 rounded-xl text-[#747976] hover:text-[#f1f3f2] hover:bg-[#222522] transition-colors duration-150 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Search Input Bar */}
-        <div className="p-4 sm:p-6 border-b border-slate-800/80 bg-[#090d18] space-y-3">
+        <div className="p-4 sm:p-6 border-b border-[#2b2e2c]/80 bg-[#090d18] space-y-3">
           <form 
             onSubmit={(e) => {
               e.preventDefault();
@@ -198,13 +198,13 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Ask anything about prop firms, live discounts, payout proofs, or trading rules..."
-                className="w-full bg-[#12182b] border border-blue-500/30 text-xs sm:text-sm rounded-xl pl-10 pr-4 py-2.5 sm:py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+                className="w-full bg-[#12182b] border border-blue-500/30 text-xs sm:text-sm rounded-xl pl-10 pr-4 py-2.5 sm:py-3 text-[#f1f3f2] placeholder-[#747976] focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
               />
             </div>
             <button
               type="submit"
               disabled={loading || !query.trim()}
-              className="px-5 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:opacity-50 text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition-all shadow-md shadow-blue-900/40 cursor-pointer"
+              className="px-5 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-blue-600 via-emerald-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 disabled:opacity-50 text-white font-semibold text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer"
             >
               {loading ? (
                 <>
@@ -222,12 +222,12 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
 
           {/* Preset Chips */}
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-1">
-            <span className="text-[11px] font-bold text-slate-400 whitespace-nowrap">Suggested:</span>
+            <span className="text-[11px] font-semibold text-[#747976] whitespace-nowrap">Suggested:</span>
             {quickPresets.map((preset, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSearch(preset.query)}
-                className="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-blue-900/40 border border-slate-700/80 hover:border-blue-500/50 text-[11px] text-slate-300 hover:text-white whitespace-nowrap transition-all cursor-pointer"
+                className="px-2.5 py-1 rounded-lg bg-[#222522]/80 hover:bg-blue-900/40 border border-[#333633]/80 hover:border-blue-500/50 text-[11px] text-[#9a9e9b] hover:text-[#f1f3f2] whitespace-nowrap transition-all cursor-pointer"
               >
                 {preset.label}
               </button>
@@ -246,8 +246,8 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
                 </div>
               </div>
               <div className="space-y-1">
-                <div className="text-sm font-bold text-white">Querying Google Search Engine...</div>
-                <div className="text-xs text-slate-400 max-w-sm">
+                <div className="text-sm font-semibold text-[#f1f3f2]">Querying Google Search Engine...</div>
+                <div className="text-xs text-[#747976] max-w-sm">
                   Grounding realtime intelligence with gemini-3.5-flash and verifying web sources
                 </div>
               </div>
@@ -258,9 +258,9 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
             <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-500/40 flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-rose-400 flex-shrink-0 mt-0.5" />
               <div className="space-y-1 text-xs">
-                <div className="font-bold text-rose-300">Grounding Notice</div>
+                <div className="font-semibold text-rose-300">Grounding Notice</div>
                 <div className="text-rose-200/80">{error}</div>
-                <div className="text-slate-400 pt-1">
+                <div className="text-[#747976] pt-1">
                   Tip: Make sure you have set a valid Gemini API key in Settings &gt; Secrets, or try rephrasing your search query.
                 </div>
               </div>
@@ -273,8 +273,8 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
                 <Search className="w-7 h-7" />
               </div>
               <div className="space-y-1">
-                <h3 className="font-bold text-white text-base">Real-Time Search Grounding</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <h3 className="font-bold text-[#f1f3f2] text-base">Real-Time Search Grounding</h3>
+                <p className="text-xs text-[#747976] leading-relaxed">
                   Search across verified 2026 data on proprietary trading firms, flash discounts, EOD vs trailing drawdown mechanics, and payout proofs.
                 </p>
               </div>
@@ -283,9 +283,9 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
                   <button
                     key={i}
                     onClick={() => handleSearch(p.query)}
-                    className="p-2.5 rounded-xl bg-[#13182b] hover:bg-[#1a223d] border border-slate-800 hover:border-blue-500/40 text-left text-xs text-slate-300 hover:text-white transition-all cursor-pointer"
+                    className="p-2.5 rounded-xl bg-[#13182b] hover:bg-[#1a223d] border border-[#2b2e2c] hover:border-blue-500/40 text-left text-xs text-[#9a9e9b] hover:text-[#f1f3f2] transition-all cursor-pointer"
                   >
-                    <div className="font-bold">{p.label}</div>
+                    <div className="font-semibold">{p.label}</div>
                   </button>
                 ))}
               </div>
@@ -298,23 +298,23 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
               {/* Grounding Status Bar */}
               <div className="p-3 rounded-xl bg-[#12182b] border border-blue-500/30 flex flex-wrap items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span className="font-bold text-white">Google Search Grounded</span>
-                  <span className="text-slate-400">•</span>
-                  <span className="text-slate-400">Model: <strong className="text-blue-300">{result.model}</strong></span>
+                  <CheckCircle2 className="w-4 h-4 text-[#3ecf8e]" />
+                  <span className="font-semibold text-[#f1f3f2]">Google Search Grounded</span>
+                  <span className="text-[#747976]">•</span>
+                  <span className="text-[#747976]">Model: <strong className="text-blue-300">{result.model}</strong></span>
                 </div>
                 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleCopy}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-[#222522] hover:bg-slate-700 text-[#9a9e9b] hover:text-[#f1f3f2] flex items-center gap-1.5 transition-colors duration-150 cursor-pointer"
                   >
-                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copied ? <Check className="w-3.5 h-3.5 text-[#3ecf8e]" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copied ? 'Copied' : 'Copy Text'}</span>
                   </button>
                   <button
                     onClick={() => handleSearch()}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-[#222522] hover:bg-slate-700 text-[#9a9e9b] hover:text-[#f1f3f2] flex items-center gap-1.5 transition-colors duration-150 cursor-pointer"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
                     <span>Re-check Web</span>
@@ -325,7 +325,7 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
               {/* Google Queries Executed */}
               {result.webSearchQueries && result.webSearchQueries.length > 0 && (
                 <div className="space-y-1.5">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <div className="text-[11px] font-semibold uppercase tracking-wider text-[#747976] flex items-center gap-1.5">
                     <Search className="w-3.5 h-3.5 text-blue-400" />
                     <span>Google Search Queries Executed</span>
                   </div>
@@ -343,15 +343,15 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
               )}
 
               {/* Synthesized Grounded Text */}
-              <div className="p-5 rounded-2xl bg-[#101526] border border-slate-800 text-slate-200 text-xs sm:text-sm leading-relaxed space-y-3 whitespace-pre-line shadow-inner">
+              <div className="p-5 rounded-2xl bg-[#101526] border border-[#2b2e2c] text-[#9a9e9b] text-xs sm:text-sm leading-relaxed space-y-3 whitespace-pre-line shadow-inner">
                 {result.text}
               </div>
 
               {/* Grounding Source Citations */}
               {result.sources && result.sources.length > 0 && (
                 <div className="space-y-2.5 pt-2">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                    <Globe className="w-3.5 h-3.5 text-emerald-400" />
+                  <div className="text-[11px] font-semibold uppercase tracking-wider text-[#747976] flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-[#3ecf8e]" />
                     <span>Verified Web Sources ({result.sources.length})</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -361,17 +361,17 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
                         href={src.uri}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-3 rounded-xl bg-[#12182b] hover:bg-[#182038] border border-slate-800 hover:border-blue-500/50 transition-all flex items-start justify-between gap-2 group"
+                        className="p-3 rounded-xl bg-[#12182b] hover:bg-[#182038] border border-[#2b2e2c] hover:border-blue-500/50 transition-all flex items-start justify-between gap-2 group"
                       >
                         <div className="space-y-0.5 min-w-0">
-                          <div className="font-bold text-xs text-white group-hover:text-blue-300 truncate">
+                          <div className="font-semibold text-xs text-[#f1f3f2] group-hover:text-blue-300 truncate">
                             {src.title || getDomain(src.uri)}
                           </div>
-                          <div className="text-[11px] text-slate-400 truncate flex items-center gap-1">
-                            <span className="text-emerald-400 font-mono text-[10px]">{getDomain(src.uri)}</span>
+                          <div className="text-[11px] text-[#747976] truncate flex items-center gap-1">
+                            <span className="text-[#3ecf8e] font-mono text-[10px]">{getDomain(src.uri)}</span>
                           </div>
                         </div>
-                        <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-400 flex-shrink-0 mt-0.5" />
+                        <ExternalLink className="w-3.5 h-3.5 text-[#747976] group-hover:text-blue-400 flex-shrink-0 mt-0.5" />
                       </a>
                     ))}
                   </div>
@@ -383,14 +383,14 @@ export const GoogleSearchGroundingModal: React.FC<GoogleSearchGroundingModalProp
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-3 border-t border-slate-800 bg-[#090d18] flex items-center justify-between text-[11px] text-slate-400">
+        <div className="px-6 py-3 border-t border-[#2b2e2c] bg-[#090d18] flex items-center justify-between text-[11px] text-[#747976]">
           <div className="flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <ShieldCheck className="w-4 h-4 text-[#3ecf8e]" />
             <span>Search Grounding enforced with gemini-3.5-flash</span>
           </div>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold transition-colors cursor-pointer"
+            className="px-4 py-1.5 rounded-lg bg-[#222522] hover:bg-slate-700 text-[#f1f3f2] font-semibold transition-colors duration-150 cursor-pointer"
           >
             Close
           </button>

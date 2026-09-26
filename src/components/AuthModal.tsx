@@ -60,51 +60,51 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
   };
 
   return (
-    <div 
+    <div
       onClick={onClose}
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto"
     >
-      <div 
-        className="relative w-full max-w-md my-auto bg-[#131728] border border-purple-500/40 rounded-2xl p-6 sm:p-8 shadow-2xl text-slate-100 max-h-[88vh] overflow-y-auto"
+      <div
+        className="relative w-full max-w-md my-auto bg-[#1d1f1e] border border-emerald-500/40 rounded-2xl p-6 sm:p-8 text-slate-100 max-h-[88vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Glow effect */}
-        <div className="absolute -top-16 -right-16 w-36 h-36 bg-purple-600/30 rounded-full blur-2xl pointer-events-none"></div>
+        <div className="absolute -top-16 -right-16 w-36 h-36 bg-emerald-600/30 rounded-full blur-2xl pointer-events-none"></div>
 
         {/* Close button */}
         <button
           onClick={onClose}
           aria-label="Close modal"
-          className="absolute top-4 right-4 text-slate-300 hover:text-white p-1.5 rounded-xl bg-slate-800/80 hover:bg-purple-600/80 border border-slate-700/60 transition-all cursor-pointer z-10"
+          className="absolute top-4 right-4 text-[#9a9e9b] hover:text-[#f1f3f2] p-1.5 rounded-xl bg-[#222522]/80 hover:bg-emerald-600/80 border border-[#333633]/60 transition-all cursor-pointer z-10"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-purple-900/40">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-emerald-500 flex items-center justify-center mx-auto mb-3">
             <Sparkles className="w-6 h-6 text-white" />
           </div>
-          <h3 className="text-xl font-extrabold text-white tracking-tight">
-            Sign In to Prop Firm Match
+          <h3 className="text-xl font-bold text-[#f1f3f2] tracking-tight">
+            Sign in to Signal Props
           </h3>
-          <p className="text-xs text-slate-400 mt-1">
-            Claim your <span className="text-pink-400 font-bold">200 Loyalty Points Welcome Bonus</span>, save favorites, and write reviews.
+          <p className="text-xs text-[#747976] mt-1">
+            Claim your <span className="text-[#3ecf8e] font-semibold">200 Loyalty Points Welcome Bonus</span>, save favorites, and write reviews.
           </p>
         </div>
 
         {/* Perks pill list */}
-        <div className="bg-[#191e36] border border-slate-800 rounded-xl p-3 mb-6 space-y-2 text-xs">
-          <div className="flex items-center gap-2 text-slate-300">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+        <div className="bg-[#222522] border border-[#2b2e2c] rounded-xl p-3 mb-6 space-y-2 text-xs">
+          <div className="flex items-center gap-2 text-[#9a9e9b]">
+            <CheckCircle2 className="w-4 h-4 text-[#3ecf8e] flex-shrink-0" />
             <span>Instant 200 Loyalty Points credited upon registration</span>
           </div>
-          <div className="flex items-center gap-2 text-slate-300">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+          <div className="flex items-center gap-2 text-[#9a9e9b]">
+            <CheckCircle2 className="w-4 h-4 text-[#3ecf8e] flex-shrink-0" />
             <span>Cloud sync for bookmarked firms and challenge comparisons</span>
           </div>
-          <div className="flex items-center gap-2 text-slate-300">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+          <div className="flex items-center gap-2 text-[#9a9e9b]">
+            <CheckCircle2 className="w-4 h-4 text-[#3ecf8e] flex-shrink-0" />
             <span>Free entry into 5x $100K Funded Account Giveaways</span>
           </div>
         </div>
@@ -121,7 +121,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             onClick={handleGoogleSignIn}
             disabled={loading}
             id="google-signin-btn"
-            className="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-sm flex items-center justify-center gap-3 shadow-lg transition-all cursor-pointer disabled:opacity-50"
+            className="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-semibold text-sm flex items-center justify-center gap-3 transition-all cursor-pointer disabled:opacity-50"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -146,22 +146,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
           {/* Quick Trader Guest Mode */}
           <div className="relative flex py-2 items-center">
-            <div className="flex-grow border-t border-slate-800"></div>
-            <span className="flex-shrink mx-3 text-slate-500 text-[11px] uppercase tracking-wider font-semibold">Or</span>
-            <div className="flex-grow border-t border-slate-800"></div>
+            <div className="flex-grow border-t border-[#2b2e2c]"></div>
+            <span className="flex-shrink mx-3 text-[#9a9e9b] text-[11px] uppercase tracking-wider font-semibold">Or</span>
+            <div className="flex-grow border-t border-[#2b2e2c]"></div>
           </div>
 
           <button
             onClick={handleGuestSignIn}
             disabled={loading}
-            className="w-full py-2.5 px-4 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 font-semibold text-xs border border-slate-700 transition-all cursor-pointer disabled:opacity-50"
+            className="w-full py-2.5 px-4 rounded-xl bg-[#222522]/80 hover:bg-slate-700/80 text-[#9a9e9b] font-semibold text-xs border border-[#333633] transition-all cursor-pointer disabled:opacity-50"
           >
             Continue as Instant Guest Trader (200 LP)
           </button>
         </div>
 
-        <div className="mt-6 text-center text-[11px] text-slate-500">
-          By signing in, you agree to Prop Firm Match Terms of Service and Privacy Policy. Securely authenticated with Firebase.
+        <div className="mt-6 text-center text-[11px] text-[#9a9e9b]">
+          By signing in, you agree to Signal Props Terms of Service and Privacy Policy. Securely authenticated with Firebase.
         </div>
 
       </div>

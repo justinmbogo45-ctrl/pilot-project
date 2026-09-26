@@ -1,62 +1,37 @@
 import React from 'react';
-import { ShieldCheck, FolderGit2, MessageSquareText, Globe2, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Search } from 'lucide-react';
+import type { PropFirm } from '../types';
+import { PrimaryButton } from './ui/PrimaryButton';
+import { SecondaryButton } from './ui/SecondaryButton';
+import { ComparisonPreview } from './ComparisonPreview';
 
 interface HeroSectionProps {
-  onOpenGoogleGrounding?: () => void;
+  firms: PropFirm[];
+  onCompare: () => void;
+  onBrowseOffers: () => void;
+  onOpenGoogleGrounding: () => void;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenGoogleGrounding }) => {
-  return (
-    <section className="pt-8 pb-4 text-center px-4 max-w-5xl mx-auto space-y-4">
-      
-      {/* Search Grounding Feature Banner */}
-      {onOpenGoogleGrounding && (
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-950/60 border border-blue-500/40 text-xs font-semibold text-blue-200 hover:border-blue-400 transition-all cursor-pointer shadow-md group"
-          onClick={onOpenGoogleGrounding}
-        >
-          <div className="flex items-center gap-1.5">
-            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-            </svg>
-            <span>Live Web Intelligence Active</span>
-            <span className="px-1.5 py-0.2 rounded bg-blue-500/30 text-[10px] font-mono text-blue-300">gemini-3.5-flash</span>
-          </div>
-          <span className="text-slate-400 group-hover:text-white transition-colors">→ Verify 2026 Promos & Payouts</span>
+export const HeroSection: React.FC<HeroSectionProps> = ({ firms, onCompare, onBrowseOffers, onOpenGoogleGrounding }) => (
+  <section className="mx-auto max-w-[1240px] px-6 pt-20 pb-20 sm:px-8 lg:pt-28 lg:pb-24">
+    <div className="grid items-center gap-16 lg:grid-cols-[1fr_0.95fr] lg:gap-20">
+      <div className="max-w-[650px]">
+        <p className="mb-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#3ecf8e]">Prop firm comparison platform</p>
+        <h1 className="text-[clamp(2.65rem,5.2vw,4rem)] font-semibold leading-[1.07] tracking-[-0.045em] text-[#f1f3f2]">
+          Compare the best <span className="text-[#3ecf8e]">prop trading firms</span> for 2026
+        </h1>
+        <p className="mt-7 max-w-[540px] text-base leading-7 text-[#9a9e9b] sm:text-lg sm:leading-8">
+          Find the right challenge with a clearer view of pricing, trading rules, payouts, reviews, and current offers.
+        </p>
+        <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+          <PrimaryButton size="lg" onClick={onCompare}>Compare firms <ArrowRight className="h-4 w-4" /></PrimaryButton>
+          <SecondaryButton size="lg" onClick={onBrowseOffers}>Browse offers <ArrowUpRight className="h-4 w-4" /></SecondaryButton>
         </div>
-      )}
-
-      <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
-        Compare the Best Prop Trading Firms of 2026
-      </h1>
-      <p className="mt-3 text-sm sm:text-base text-slate-400 max-w-3xl mx-auto leading-relaxed">
-        Trusted platform to compare prop trading firms using verified data and insights, including reviews, rules, and rankings.
-      </p>
-
-      {/* Trust Badges */}
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#161a29]/90 border border-slate-800 text-xs font-semibold text-slate-300 shadow-sm">
-          <ShieldCheck className="w-4 h-4 text-indigo-400" />
-          <span>Firms sourced from PropFirmMap</span>
-        </div>
-
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#161a29]/90 border border-slate-800 text-xs font-semibold text-slate-300 shadow-sm">
-          <FolderGit2 className="w-4 h-4 text-cyan-400" />
-          <span>1500+ Challenges</span>
-        </div>
-
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#161a29]/90 border border-slate-800 text-xs font-semibold text-slate-300 shadow-sm">
-          <MessageSquareText className="w-4 h-4 text-pink-400" />
-          <span>12000+ Real Trader Reviews</span>
-        </div>
-
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#161a29]/90 border border-slate-800 text-xs font-semibold text-slate-300 shadow-sm">
-          <Globe2 className="w-4 h-4 text-emerald-400" />
-          <span>Compare current account plans</span>
-        </div>
+        <button onClick={onOpenGoogleGrounding} className="mt-8 inline-flex items-center gap-2 text-sm text-[#9a9e9b] transition-colors hover:text-[#f1f3f2]">
+          <Search className="h-4 w-4 text-[#3ecf8e]" /> Research a firm with live search <ArrowRight className="h-3.5 w-3.5" />
+        </button>
       </div>
-    </section>
-  );
-};
+      <ComparisonPreview firms={firms} onCompare={onCompare} />
+    </div>
+  </section>
+);
